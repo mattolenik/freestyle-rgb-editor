@@ -1,0 +1,17 @@
+{lctrl}{hk0}>{s5}{x1}{3}{4}{7}{4}{2}{6}{ent}
+{lalt}{hk0}>{s5}{x1}{2}{2}{9}{3}{7}{5}{ent}
+[hk1]>[vol-]
+[hk2]>[vol+]
+[hk3]>[F14]
+[hk4]>[F15]
+[hk5]>[prev]
+[hk6]>[next]
+[caps]>[esc]
+[hk7]>[play]
+[hk8]>[mute]
+[lwin]>[alt]
+[lalt]>[lwin]
+fn [lwin]>[alt]
+fn [lalt]>[lwin]
+fn [ralt]>[lwin]
+fn [rctrl]>[alt]
