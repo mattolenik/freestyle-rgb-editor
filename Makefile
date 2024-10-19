@@ -15,6 +15,9 @@ build:
 test:
 	# TODO: test execution
 
-dist: test build
+dist: clean test build
+
+clean:
+	rm -rf $(DIST)/*
 
 .PHONY: start dev build clean test dist
