@@ -4,17 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>freestyle-rgb-editor</title>
+    <script type="module" src="./src/my-element.js"></script>
+    <title>Freestyle RGB Editor</title>
 </head>
 
 <body>
     <div id="app">
-        <img id="logo" class="logo">
-        <div class="input-box" id="input">
-            <input class="input" id="name" type="text" autocomplete="off" />
-            <button class="btn" onclick="greet()">Greet</button>
-        </div>
-    </div>
+        <img id="keyboard" src="./src/assets/images/keyboard.png">
+        <my-element planet="Mars"></my-element>
     </div>
     <script src="./src/main.js" type="module"></script>
 </body>
