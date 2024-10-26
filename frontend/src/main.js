@@ -3,10 +3,6 @@ import './app.css';
 
 import { Greet } from '../wailsjs/go/main/App';
 
-let nameElement = document.getElementById("name");
-nameElement.focus();
-let resultElement = document.getElementById("result");
-
 // Setup the greet function
 window.greet = function () {
     // Get name

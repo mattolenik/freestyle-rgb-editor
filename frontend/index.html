@@ -4,14 +4,26 @@
 <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <script type="module" src="./src/my-element.js"></script>
+    <script type="module" src="./src/rgb-key.ts"></script>
+    <script type="module" src="./src/rgb-keyboard.ts"></script>
     <title>Freestyle RGB Editor</title>
 </head>
 
 <body>
     <div id="app">
-        <img id="keyboard" src="./src/assets/images/keyboard.png">
-        <my-element planet="Mars"></my-element>
+        <rgb-keyboard background-url="src/assets/images/keyboard.png"></rgb-keyboard>
+        <script type="module">
+            const keyboard = document.querySelector('rgb-keyboard');
+
+            // Define key positions using a Map with [x, y] tuples
+            keyboard.keyPositions = new Map([
+                ['Q', [50, 50]],
+                ['W', [100, 50]],
+                ['E', [150, 50]],
+                // Add more key positions as needed
+            ]);
+        </script>
+
     </div>
     <script src="./src/main.js" type="module"></script>
 </body>
