@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"os"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -17,21 +18,25 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:         "Freestyle Edge RGB Editor",
-		Width:         1300,
-		Height:        822,
+		Title:         "Kinesis Keyboard Customizer",
+		MinWidth:      1300,
+		MinHeight:     822,
 		DisableResize: false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:        app.startup,
+		OnShutdown:       app.shutdown,
 		Bind: []interface{}{
 			app,
 		},
+		// Mac: &mac.Options{
+		// },
 	})
 
 	if err != nil {
 		println("Error:", err.Error())
+		os.Exit(1)
 	}
 }

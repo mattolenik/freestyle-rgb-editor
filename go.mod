@@ -1,4 +1,4 @@
-module freestyle-rgb-editor
+module kinesis-customizer
 
 go 1.23
 

@@ -1,11 +1,17 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "Freestyle RGB Editor",
-  "outputfilename": "freestyle-rgb-editor",
+  "name": "Kinesis Keyboard Customizer",
+  "outputfilename": "kinesis-customizer",
   "frontend:install": "npm install",
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
+  "info": {
+    "copyright": "Copyright 2024 Matthew Olenik",
+    "companyName": "plop.systems",
+    "productVersion": "0.1.0",
+    "comments": "https://github.com/mattolenik/kinesis-customizer"
+  },
   "author": {
     "name": "Matthew Olenik",
     "email": "matt@olenik.me"

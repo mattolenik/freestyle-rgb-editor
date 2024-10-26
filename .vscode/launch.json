@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Wails: Production freestyle-rgb-editor",
+      "name": "Wails: Production kinesis-customizer",
       "type": "go",
       "request": "launch",
       "mode": "exec",
@@ -11,7 +11,7 @@
       "cwd": "${workspaceFolder}"
     },
     {
-      "name": "Wails: Debug freestyle-rgb-editor",
+      "name": "Wails: Debug kinesis-customizer",
       "type": "go",
       "request": "launch",
       "mode": "exec",
@@ -20,7 +20,7 @@
       "cwd": "${workspaceFolder}"
     },
     {
-      "name": "Wails: Dev freestyle-rgb-editor",
+      "name": "Wails: Dev kinesis-customizer",
       "type": "go",
       "request": "launch",
       "mode": "exec",
