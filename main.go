@@ -17,9 +17,10 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "Freestyle Edge RGB Editor",
-		Width:  1024,
-		Height: 768,
+		Title:         "Freestyle Edge RGB Editor",
+		Width:         1300,
+		Height:        822,
+		DisableResize: false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

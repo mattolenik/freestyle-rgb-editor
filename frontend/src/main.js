@@ -3,6 +3,7 @@ import './app.css';
 
 import { Greet } from '../wailsjs/go/main/App';
 
+window.isDev = true;
 // Setup the greet function
 window.greet = function () {
     // Get name
