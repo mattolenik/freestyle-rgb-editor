@@ -2,6 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import './rgb-key';
 
+const isDev = false;
+
 @customElement('rgb-keyboard')
 class RGBKeyboard extends LitElement {
     // A Map to store key labels and their positions as [x, y] tuples
@@ -70,24 +72,27 @@ class RGBKeyboard extends LitElement {
     }
 
     onMouseDown(event: MouseEvent, label: string) {
-        // Only allow dragging if window.isDev is true
-        if (window.isDev) {
-            // Start dragging and calculate the initial offsets
-            this.draggingKeyLabel = label;
-            const [currentX, currentY] = this.keyPositions.get(label) || [0, 0];
-            this.offsetX = event.clientX - currentX;
-            this.offsetY = event.clientY - currentY;
+        // Only allow dragging during development
+        if (!isDev) return;
 
-            // Focus the key when clicked
-            this.focusedKeyLabel = label;
+        // Start dragging and calculate the initial offsets
+        this.draggingKeyLabel = label;
+        const [currentX, currentY] = this.keyPositions.get(label) || [0, 0];
+        this.offsetX = event.clientX - currentX;
+        this.offsetY = event.clientY - currentY;
 
-            // Prevent default behavior to avoid text selection
-            event.preventDefault();
-        }
+        // Focus the key when clicked
+        this.focusedKeyLabel = label;
+
+        // Prevent default behavior to avoid text selection
+        event.preventDefault();
     }
 
     onMouseMove(event: MouseEvent) {
-        if (window.isDev && this.draggingKeyLabel && this.containerRect) {
+        // Only allow dragging during development
+        if (!isDev) return;
+
+        if (this.draggingKeyLabel && this.containerRect) {
             // Calculate the new position based on the mouse movement and offsets
             let newX = event.clientX - this.offsetX;
             let newY = event.clientY - this.offsetY;
@@ -107,11 +112,15 @@ class RGBKeyboard extends LitElement {
     }
 
     onMouseUp() {
+        if (!isDev) return;
         // Stop dragging
         this.draggingKeyLabel = null;
     }
 
     onKeyDown(event: KeyboardEvent) {
+        // Only allow dragging during development
+        if (!isDev) return;
+
         if (!this.focusedKeyLabel || !this.containerRect) return;
 
         // Get the current position of the focused key
@@ -187,10 +196,6 @@ class RGBKeyboard extends LitElement {
 }
 
 declare global {
-    interface Window {
-        isDev: boolean;
-    }
-
     interface HTMLElementTagNameMap {
         'rgb-keyboard': RGBKeyboard;
     }
