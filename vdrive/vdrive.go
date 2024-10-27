@@ -265,4 +265,4 @@ var FSEdgeRGBKeys = maps.ToStableMap([]*KeyInfo{
 	{ID: "lft", Name: "Left"},
 	{ID: "dwn", Name: "Down"},
 	{ID: "rght", Name: "Right"},
-}, func(item *KeyInfo) (string, *KeyInfo) { return item.Name, item })
+}, func(item *KeyInfo) (string, *KeyInfo) { return item.ID, item })
