@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"kinesis-customizer/vdrive"
 )
 
 // App struct
@@ -18,6 +20,13 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	vol, err := vdrive.GetVolumeInfo(vdrive.FSEdgeRGB)
+	if err != nil {
+		fmt.Printf("ERROR: can't get volume info: %v", err)
+	}
+	if vol != nil {
+		fmt.Printf("Volume info: %#v\n", vol)
+	}
 }
 
 func (a *App) shutdown(ctx context.Context) {

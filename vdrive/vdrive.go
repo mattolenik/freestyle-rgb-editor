@@ -23,7 +23,7 @@ type VolumeInfo struct {
 
 func GetVolumeInfo(kbName KeyboardName) (*VolumeInfo, error) {
 	volumeScript := volumeInfoCommand(kbName)
-	cmd := exec.Command("sh", "-c", volumeScript)
+	cmd := exec.Command("/bin/sh", "-c", volumeScript)
 	out, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("failed trying to find volume info for keyboard %q: %w", kbName, err)
@@ -176,6 +176,7 @@ type KeyInfo struct {
 }
 
 var FSEdgeRGBKeys = maps.ToStableMap([]*KeyInfo{
+	// Entries ordered to match the physical keyboard, left to right, row by row
 	{ID: "hk0", Name: "«"},
 	{ID: "esc", Name: "Escape"},
 	{ID: "F1", Name: "F1"},

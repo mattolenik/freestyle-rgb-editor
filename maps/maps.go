@@ -10,13 +10,14 @@ type StableMap[K comparable, V any] struct {
 
 func NewStableMap[K comparable, V any](capacity int) *StableMap[K, V] {
 	return &StableMap[K, V]{
-		dict: make(map[K]V, capacity),
-		keys: make([]*K, 0, capacity),
+		dict:       make(map[K]V, capacity),
+		keys:       make([]*K, 0, capacity),
+		keyToIndex: make(map[K]int, capacity),
 	}
 }
 
 func ToStableMap[K comparable, V any, T any](items []T, mapFn func(T) (K, V)) *StableMap[K, V] {
-	result := &StableMap[K, V]{}
+	result := NewStableMap[K, V](len(items))
 	for _, item := range items {
 		result.Set(mapFn(item))
 	}
