@@ -5,16 +5,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 )
 
 const FSEdgeRGB = "FS EDGE RGB"
-
-var MountedPath = map[string]string{
-	"darwin": "/Volumes/FS EDGE RGB",
-}
 
 type VolumeInfo struct {
 	Volume, MountPoint string
@@ -73,8 +68,6 @@ func unmountCommand(volume string) *exec.Cmd {
 		return exec.Command("umount", volume)
 	}
 }
-
-var VerisonPath = filepath.Join(MountedPath[runtime.GOOS], "firmware", "version.txt")
 
 // FirmwareInfo holds detailed firmware information
 type FirmwareInfo struct {
