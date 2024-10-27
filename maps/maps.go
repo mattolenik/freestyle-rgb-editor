@@ -4,14 +4,14 @@ import "iter"
 
 type StableMap[K comparable, V any] struct {
 	dict       map[K]V
-	keys       []K
+	keys       []*K
 	keyToIndex map[K]int
 }
 
 func NewStableMap[K comparable, V any](capacity int) *StableMap[K, V] {
 	return &StableMap[K, V]{
 		dict: make(map[K]V, capacity),
-		keys: make([]K, 0, capacity),
+		keys: make([]*K, 0, capacity),
 	}
 }
 
@@ -28,7 +28,7 @@ func (om *StableMap[K, V]) Set(key K, value V) bool {
 	if !exists {
 		om.dict[key] = value
 		om.keyToIndex[key] = len(om.keys)
-		om.keys = append(om.keys, key)
+		om.keys = append(om.keys, &key)
 		return false
 	}
 	om.dict[key] = value
@@ -38,7 +38,7 @@ func (om *StableMap[K, V]) Set(key K, value V) bool {
 func (om *StableMap[K, V]) Items() iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		for _, key := range om.keys {
-			if !yield(key, om.dict[key]) {
+			if !yield(*key, om.dict[*key]) {
 				return
 			}
 		}
