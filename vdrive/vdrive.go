@@ -10,13 +10,17 @@ import (
 	"strings"
 )
 
-const FSEdgeRGB = "FS EDGE RGB"
+type KeyboardName string
+
+const (
+	FSEdgeRGB KeyboardName = "FS EDGE RGB"
+)
 
 type VolumeInfo struct {
 	Volume, MountPoint string
 }
 
-func GetVolumeInfo(kbName string) (*VolumeInfo, error) {
+func GetVolumeInfo(kbName KeyboardName) (*VolumeInfo, error) {
 	volumeScript := volumeInfoCommand(kbName)
 	cmd := exec.Command("sh", "-c", volumeScript)
 	out, err := cmd.Output()
@@ -37,7 +41,7 @@ func GetVolumeInfo(kbName string) (*VolumeInfo, error) {
 	}, nil
 }
 
-func Unmount(kbName string) error {
+func Unmount(kbName KeyboardName) error {
 	vi, err := GetVolumeInfo(kbName)
 	if err != nil {
 		return fmt.Errorf("failed to check if keyboard %s's vdrive is mounted: %w", kbName, err)
@@ -50,7 +54,7 @@ func Unmount(kbName string) error {
 	return nil
 }
 
-func volumeInfoCommand(kbName string) string {
+func volumeInfoCommand(kbName KeyboardName) string {
 	switch runtime.GOOS {
 	case "windows":
 		panic("windows not supported yet")
