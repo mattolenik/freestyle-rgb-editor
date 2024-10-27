@@ -4,13 +4,77 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
-const MacOSVDrivePath = "/Volumes/FS EDGE RGB"
+const FSEdgeRGB = "FS EDGE RGB"
 
-var MacOSVersionPath = filepath.Join(MacOSVDrivePath, "firmware", "version.txt")
+var MountedPath = map[string]string{
+	"darwin": "/Volumes/FS EDGE RGB",
+}
+
+type VolumeInfo struct {
+	Volume, MountPoint string
+}
+
+func GetVolumeInfo(kbName string) (*VolumeInfo, error) {
+	volumeScript := volumeInfoCommand(kbName)
+	cmd := exec.Command("sh", "-c", volumeScript)
+	out, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("failed trying to find volume info for keyboard %q: %w", kbName, err)
+	}
+	outStr := strings.TrimSpace(string(out))
+	if len(outStr) == 0 {
+		return nil, nil
+	}
+	parts := strings.Split(outStr, ",")
+	if len(parts) != 2 {
+		return nil, fmt.Errorf("invalid volume info: %q", outStr)
+	}
+	return &VolumeInfo{
+		Volume:     parts[0],
+		MountPoint: parts[1],
+	}, nil
+}
+
+func Unmount(kbName string) error {
+	vi, err := GetVolumeInfo(kbName)
+	if err != nil {
+		return fmt.Errorf("failed to check if keyboard %s's vdrive is mounted: %w", kbName, err)
+	}
+	cmd := unmountCommand(vi.Volume)
+	err = cmd.Run()
+	if err != nil {
+		return fmt.Errorf("failed to unmount vdrive for keyboard %s: %w", kbName, err)
+	}
+	return nil
+}
+
+func volumeInfoCommand(kbName string) string {
+	switch runtime.GOOS {
+	case "windows":
+		panic("windows not supported yet")
+	default:
+		return fmt.Sprintf(`mount | awk -F'[(]| on ' '/%s/ {print $1","$2}'`, kbName)
+	}
+}
+
+func unmountCommand(volume string) *exec.Cmd {
+	switch runtime.GOOS {
+	case "windows":
+		panic("windows not supported yet")
+	case "darwin":
+		return exec.Command("diskutil", "eject", volume)
+	default:
+		return exec.Command("umount", volume)
+	}
+}
+
+var VerisonPath = filepath.Join(MountedPath[runtime.GOOS], "firmware", "version.txt")
 
 // FirmwareInfo holds detailed firmware information
 type FirmwareInfo struct {
