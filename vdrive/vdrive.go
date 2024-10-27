@@ -14,6 +14,7 @@ type KeyboardName string
 
 const (
 	FSEdgeRGB KeyboardName = "FS EDGE RGB"
+	// TKO KeyboardName = "???" // TODO: Kinesis TKO support
 )
 
 type VolumeInfo struct {
