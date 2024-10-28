@@ -1,32 +1,46 @@
 package vdrive
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"kinesis-customizer/maps"
+	"kinesis-customizer/keyboard"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
-)
-
-type KeyboardName string
-
-const (
-	FSEdgeRGB KeyboardName = "FS EDGE RGB"
-	// TKO KeyboardName = "???" // TODO: Kinesis TKO support
+	"time"
 )
 
 type VolumeInfo struct {
 	Volume, MountPoint string
 }
 
-func GetVolumeInfo(kbName KeyboardName) (*VolumeInfo, error) {
-	volumeScript := volumeInfoCommand(kbName)
+func (vi *VolumeInfo) String() string {
+	return fmt.Sprintf("%q [%s]", vi.MountPoint, vi.Volume)
+}
+
+type VDrive interface {
+	GetVolumeInfo() (*VolumeInfo, error)
+	Unmount() (*VolumeInfo, error)
+	Watch(context.Context)
+}
+
+type keyboardVDrive struct {
+	VDrive
+	name keyboard.KeyboardName
+}
+
+func New(kbName keyboard.KeyboardName) VDrive {
+	return &keyboardVDrive{name: kbName}
+}
+
+func (d *keyboardVDrive) GetVolumeInfo() (*VolumeInfo, error) {
+	volumeScript := volumeInfoCommand(d.name)
 	cmd := exec.Command("/bin/sh", "-c", volumeScript)
 	out, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf("failed trying to find volume info for keyboard %q: %w", kbName, err)
+		return nil, fmt.Errorf("failed trying to find volume info for keyboard %q: %w", d.name, err)
 	}
 	outStr := strings.TrimSpace(string(out))
 	if len(outStr) == 0 {
@@ -42,20 +56,48 @@ func GetVolumeInfo(kbName KeyboardName) (*VolumeInfo, error) {
 	}, nil
 }
 
-func Unmount(kbName KeyboardName) error {
-	vi, err := GetVolumeInfo(kbName)
+func (d *keyboardVDrive) Unmount() (*VolumeInfo, error) {
+	vi, err := d.GetVolumeInfo()
 	if err != nil {
-		return fmt.Errorf("failed to check if keyboard %s's vdrive is mounted: %w", kbName, err)
+		return nil, fmt.Errorf("failed to check if keyboard %s's vdrive is mounted: %w", d.name, err)
+	}
+	if vi == nil {
+		// Not mounted
+		return nil, nil
 	}
 	cmd := unmountCommand(vi.Volume)
-	err = cmd.Run()
+	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("failed to unmount vdrive for keyboard %s: %w", kbName, err)
+		return nil, fmt.Errorf("failed to unmount vdrive for keyboard %s: %w", d.name, err)
 	}
-	return nil
+	fmt.Println(strings.TrimSpace(string(out)))
+	return vi, nil
 }
 
-func volumeInfoCommand(kbName KeyboardName) string {
+func (d *keyboardVDrive) Watch(ctx context.Context) {
+	var currentVolInfo *VolumeInfo
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			vol, err := d.GetVolumeInfo()
+			if err != nil {
+				fmt.Printf("ERROR: can't get volume info: %v\n", err)
+			} else if currentVolInfo == nil && vol != nil {
+				fmt.Printf("Mounted %v\n", vol)
+				currentVolInfo = vol
+			} else if currentVolInfo != nil && vol == nil {
+				// no longer mounted
+				fmt.Printf("Unmounted %v\n", currentVolInfo)
+				currentVolInfo = nil
+			}
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+
+func volumeInfoCommand(kbName keyboard.KeyboardName) string {
 	switch runtime.GOOS {
 	case "windows":
 		panic("windows not supported yet")
@@ -69,7 +111,7 @@ func unmountCommand(volume string) *exec.Cmd {
 	case "windows":
 		panic("windows not supported yet")
 	case "darwin":
-		return exec.Command("diskutil", "eject", volume)
+		return exec.Command("diskutil", "unmount", volume)
 	default:
 		return exec.Command("umount", volume)
 	}
@@ -170,105 +212,3 @@ func readVersionInfo(filePath string) (map[string]string, error) {
 
 	return firmwareInfo, nil
 }
-
-type KeyInfo struct {
-	ID, Name string
-}
-
-var FSEdgeRGBKeys = maps.ToStableMap([]*KeyInfo{
-	// Entries ordered to match the physical keyboard, left to right, row by row
-	{ID: "hk0", Name: "«"},
-	{ID: "esc", Name: "Escape"},
-	{ID: "F1", Name: "F1"},
-	{ID: "F2", Name: "F2"},
-	{ID: "F3", Name: "F3"},
-	{ID: "F4", Name: "F4"},
-	{ID: "F5", Name: "F5"},
-	{ID: "F6", Name: "F6"},
-	{ID: "F7", Name: "F7"},
-	{ID: "F8", Name: "F8"},
-	{ID: "F9", Name: "F9"},
-	{ID: "F10", Name: "F10"},
-	{ID: "F11", Name: "F11"},
-	{ID: "F12", Name: "F12"},
-	{ID: "prnt", Name: "Printscreen"},
-	{ID: "pause", Name: "Pause"},
-	{ID: "del", Name: "Delete"},
-	{ID: "hk1", Name: "①"},
-	{ID: "hk2", Name: "②"},
-	{ID: "tilde", Name: "Tilde"},
-	{ID: "1", Name: "1"},
-	{ID: "2", Name: "2"},
-	{ID: "3", Name: "3"},
-	{ID: "4", Name: "4"},
-	{ID: "5", Name: "5"},
-	{ID: "6", Name: "6"},
-	{ID: "7", Name: "7"},
-	{ID: "8", Name: "8"},
-	{ID: "9", Name: "9"},
-	{ID: "0", Name: "0"},
-	{ID: "hyph", Name: "Hyphen"},
-	{ID: "=", Name: "Equals"},
-	{ID: "bspc", Name: "Backspace"},
-	{ID: "home", Name: "Home"},
-	{ID: "hk3", Name: "③"},
-	{ID: "hk4", Name: "④"},
-	{ID: "tab", Name: "Tab"},
-	{ID: "q", Name: "Q"},
-	{ID: "w", Name: "W"},
-	{ID: "e", Name: "E"},
-	{ID: "r", Name: "R"},
-	{ID: "t", Name: "T"},
-	{ID: "y", Name: "Y"},
-	{ID: "u", Name: "U"},
-	{ID: "i", Name: "I"},
-	{ID: "o", Name: "O"},
-	{ID: "p", Name: "P"},
-	{ID: "obrk", Name: "Bracket Open"},
-	{ID: "cbrk", Name: "Bracket Close"},
-	{ID: `\`, Name: "Backslash"},
-	{ID: "end", Name: "End"},
-	{ID: "hk5", Name: "⑤"},
-	{ID: "hk6", Name: "⑥"},
-	{ID: "caps", Name: "Capslock"},
-	{ID: "a", Name: "A"},
-	{ID: "s", Name: "S"},
-	{ID: "d", Name: "D"},
-	{ID: "f", Name: "F"},
-	{ID: "g", Name: "G"},
-	{ID: "h", Name: "H"},
-	{ID: "j", Name: "J"},
-	{ID: "k", Name: "K"},
-	{ID: "l", Name: "L"},
-	{ID: "colon", Name: "Colon"},
-	{ID: "apos", Name: "Apostrophe"},
-	{ID: "ent", Name: "Enter"},
-	{ID: "pup", Name: "Page Up"},
-	{ID: "hk7", Name: "⑦"},
-	{ID: "hk8", Name: "⑧"},
-	{ID: "lshft", Name: "Shift (Left)"},
-	{ID: "z", Name: "Z"},
-	{ID: "x", Name: "X"},
-	{ID: "c", Name: "C"},
-	{ID: "v", Name: "V"},
-	{ID: "b", Name: "B"},
-	{ID: "n", Name: "N"},
-	{ID: "m", Name: "M"},
-	{ID: "com", Name: "Comma"},
-	{ID: "per", Name: "Period"},
-	{ID: "/", Name: "Slash"},
-	{ID: "rshft", Name: "Shift (Right)"},
-	{ID: "up", Name: "Up"},
-	{ID: "pdn", Name: "Page Down"},
-	{ID: "hk9", Name: "FN"},
-	{ID: "lctrl", Name: "Ctrl (Left)"},
-	{ID: "lwin", Name: "Win (Left)"},
-	{ID: "lalt", Name: "Alt (Left)"},
-	{ID: "lspc", Name: "Space (Left)"},
-	{ID: "rspc", Name: "Space (Right)"},
-	{ID: "ralt", Name: "Alt (Right)"},
-	{ID: "rctrl", Name: "Ctrl (Right)"},
-	{ID: "lft", Name: "Left"},
-	{ID: "dwn", Name: "Down"},
-	{ID: "rght", Name: "Right"},
-}, func(item *KeyInfo) (string, *KeyInfo) { return item.ID, item })
