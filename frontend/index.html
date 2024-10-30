@@ -11,26 +11,32 @@
 
 <body>
     <div id="app">
-        <rgb-keyboard id="keyboard" background-url="src/assets/images/keyboard.png"></rgb-keyboard>
+        <div id="keyboard">
+            <rgb-keyboard id="keyboard-left" background-url="src/assets/images/keyboard-left.png"></rgb-keyboard>
+            <rgb-keyboard id="keyboard-right" background-url="src/assets/images/keyboard-right.png"></rgb-keyboard>
+        </div>
         <button id="dump-button">Dump Key Positions to Console</button>
 
         <script type="module">
-            const keyboardElement = document.getElementById('keyboard');
+            const keyboardLeftElement = document.getElementById('keyboard-left');
+            const keyboardRightElement = document.getElementById('keyboard-right');
             const dumpButton = document.getElementById('dump-button');
 
             dumpButton.addEventListener('click', () => {
-                if (keyboardElement) {
-                    // Access the getKeyPositions method and log the output
-                    const tsRepresentation = keyboardElement.getKeyPositions();
-                    console.log('Key Positions (TypeScript representation):');
-                    console.log(tsRepresentation);
-                }
+                // Access the getKeyPositions method and log the output
+                const tsLeft = keyboardLeftElement.getKeyPositions();
+                const tsRight = keyboardRightElement.getKeyPositions();
+                console.log('Left side key positions (TypeScript representation):');
+                console.log(tsLeft);
+                console.log('Right side key positions (TypeScript representation):');
+                console.log(tsRight);
             });
 
             const xOffset = 260;
             const yOffset = 220;
 
-            const keyPositions = new Map([
+            const leftHalfKeys = new Map([
+                ['«', [171, 207]],
                 ['Esc', [266, 209]],
                 ['F1', [319, 209]],
                 ['F2', [373, 209]],
@@ -38,12 +44,8 @@
                 ['F4', [478, 209]],
                 ['F5', [530, 209]],
                 ['F6', [584, 209]],
-                ['F7', [729, 210]],
-                ['F8', [782, 210]],
-                ['F9', [835, 210]],
-                ['F10', [888, 210]],
-                ['F11', [942, 210]],
-                ['F12', [995, 210]],
+                ['①', [145, 280]],
+                ['②', [198, 280]],
                 ['`', [267, 281]],
                 ['1', [320, 279]],
                 ['2', [373, 280]],
@@ -51,19 +53,60 @@
                 ['4', [479, 280]],
                 ['5', [532, 280]],
                 ['6', [584, 280]],
-                ['7', [730, 279]],
-                ['8', [782, 280]],
-                ['9', [836, 280]],
-                ['0', [888, 280]],
-                ['-', [942, 278]],
-                ['=', [994, 278]],
-                ['Home', [1153, 279]],
+                ['③', [146, 333]],
+                ['④', [199, 333]],
                 ['Tab', [279, 332]],
                 ['Q', [346, 332]],
                 ['W', [399, 333]],
                 ['E', [452, 332]],
                 ['R', [505, 332]],
                 ['T', [558, 332]],
+                ['⑤', [146, 386]],
+                ['⑥', [199, 385]],
+                ['CapsLock', [276, 385]],
+                ['A', [360, 385]],
+                ['S', [412, 386]],
+                ['D', [465, 386]],
+                ['F', [518, 385]],
+                ['G', [571, 386]],
+                ['⑦', [146, 438]],
+                ['⑧', [199, 438]],
+                ['Shift', [276, 438]],
+                ['Z', [386, 438]],
+                ['X', [438, 438]],
+                ['C', [490, 438]],
+                ['V', [544, 438]],
+                ['B', [597, 438]],
+                ['FN', [146, 491]],
+                ['☼', [199, 491]]
+                ['Ctrl', [279, 491]],
+                ['⊞', [346, 489]],
+                ['Alt', [404, 490]],
+                ['Space', [553, 490]],
+            ]);
+
+
+
+            const rightHalfKeys = new Map([
+                ['F7', [729, 210]],
+                ['F8', [782, 210]],
+                ['F9', [835, 210]],
+                ['F10', [888, 210]],
+                ['F11', [942, 210]],
+                ['F12', [995, 210]],
+                ['PRNT', [1046, 209]],
+                ['PAUSE', [1100, 209]],
+                ['DEL', [1153, 332]],
+
+                ['7', [730, 279]],
+                ['8', [782, 280]],
+                ['9', [836, 280]],
+                ['0', [888, 280]],
+                ['-', [942, 278]],
+                ['=', [994, 278]],
+                ['Backspace', [1062, 278]],
+                ['Home', [1153, 279]],
+
                 ['Y', [702, 332]],
                 ['U', [756, 333]],
                 ['I', [809, 332]],
@@ -72,12 +115,8 @@
                 ['[', [966, 331]],
                 [']', [1021, 331]],
                 ['\\', [1086, 332]],
-                ['CapsLock', [276, 385]],
-                ['A', [360, 385]],
-                ['S', [412, 386]],
-                ['D', [465, 386]],
-                ['F', [518, 385]],
-                ['G', [571, 386]],
+                ['End', [1153, 209]],
+
                 ['H', [716, 386]],
                 ['J', [770, 386]],
                 ['K', [821, 386]],
@@ -85,51 +124,27 @@
                 [';', [928, 383]],
                 ["'", [980, 384]],
                 ['Enter', [1065, 385]],
-                ['Shift', [276, 438]],
-                ['Z', [386, 438]],
-                ['X', [438, 438]],
-                ['C', [490, 438]],
-                ['V', [544, 438]],
-                ['B', [597, 438]],
+                ['PgUp', [1152, 384]],
+
                 ['N', [742, 439]],
                 ['M', [796, 438]],
                 [',', [847, 438]],
                 ['.', [901, 438]],
                 ['/', [954, 439]],
                 ['ShiftR', [1025, 438]],
-                ['Ctrl', [279, 491]],
-                ['⊞', [346, 489]],
-                ['Alt', [404, 490]],
-                ['Space', [553, 490]],
-                ['AltR', [895, 489]],
-                ['«', [171, 207]],
-                ['CtrlR', [975, 490]],
                 ['↑', [1100, 437]],
                 ['PgDn', [1152, 437]],
+
+                ['AltR', [895, 489]],
+                ['CtrlR', [975, 490]],
                 ['←', [1046, 490]],
                 ['↓', [1100, 490]],
                 ['→', [1152, 490]],
-                ['PRNT', [1046, 209]],
-                ['PAUSE', [1100, 209]],
-                ['DEL', [1153, 332]],
-                ['Backspace', [1062, 278]],
-                ['End', [1153, 209]],
-                ['PgUp', [1152, 384]],
-                ['①', [145, 280]],
-                ['②', [198, 280]],
-                ['③', [146, 333]],
-                ['④', [199, 333]],
-                ['⑤', [146, 386]],
-                ['⑥', [199, 385]],
-                ['⑦', [146, 438]],
-                ['⑧', [199, 438]],
-                ['FN', [146, 491]],
-                ['☼', [199, 491]]
+
             ]);
 
-
-            // Define key positions using a Map with [x, y] tuples
-            keyboardElement.keyPositions = keyPositions;
+            keyboardLeftElement.keyPositions = leftHalfKeys;
+            keyboardRightElement.keyPositions = rightHalfKeys;
         </script>
 
 
