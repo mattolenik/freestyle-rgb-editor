@@ -19,7 +19,7 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:         "Kinesis Keyboard Customizer",
-		MinWidth:      1300,
+		MinWidth:      800,
 		MinHeight:     822,
 		DisableResize: false,
 		AssetServer: &assetserver.Options{
