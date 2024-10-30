@@ -2,11 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 @customElement('rgb-key')
-class RGBKey extends LitElement {
-    @property({ type: String })
-    color: string = '#FFFFFF';
+export class RGBKey extends LitElement {
+  @property({ type: String })
+  color: string = '#FFFFFF';
 
-    static styles = css`
+  static styles = css`
     :host {
       display: inline-block;
       width: 40px;  /* You can adjust this size */
@@ -20,23 +20,23 @@ class RGBKey extends LitElement {
     }
   `;
 
-    updated(changedProperties: Map<string, any>) {
-        if (changedProperties.has('color')) {
-            this.style.setProperty('--key-color', this.color);
-        }
+  updated(changedProperties: Map<string, any>) {
+    if (changedProperties.has('color')) {
+      this.style.setProperty('--key-color', this.color);
     }
+  }
 
-    render() {
-        return html`
+  render() {
+    return html`
       <div style="color: ${this.color};">
         <slot></slot>
       </div>
     `;
-    }
+  }
 }
 
 declare global {
-    interface HTMLElementTagNameMap {
-        'rgb-key': RGBKey;
-    }
+  interface HTMLElementTagNameMap {
+    'rgb-key': RGBKey;
+  }
 }

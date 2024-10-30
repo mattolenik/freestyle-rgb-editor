@@ -5,10 +5,10 @@ import './rgb-key';
 const isDev = false;
 
 @customElement('rgb-keyboard')
-class RGBKeyboard extends LitElement {
+export class RGBKeyboard extends LitElement {
     // A Map to store key labels and their positions as [x, y] tuples
     @state()
-    keyPositions: Map<string, [number, number]> = new Map();
+    public keyPositions: Map<string, [number, number]> = new Map();
 
     // Background image URL as an attribute
     @property({ type: String, attribute: 'background-url' })
