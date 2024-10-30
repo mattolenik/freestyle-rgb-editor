@@ -7,6 +7,7 @@ import (
 	"kinesis-customizer/keyboard"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
@@ -18,6 +19,10 @@ type VolumeInfo struct {
 
 func (vi *VolumeInfo) String() string {
 	return fmt.Sprintf("%q [%s]", vi.MountPoint, vi.Volume)
+}
+
+func (vi *VolumeInfo) Path(parts ...string) string {
+	return filepath.Join(append([]string{vi.MountPoint}, parts...)...)
 }
 
 type VDrive interface {
@@ -87,6 +92,12 @@ func (d *keyboardVDrive) Watch(ctx context.Context) {
 			} else if currentVolInfo == nil && vol != nil {
 				fmt.Printf("Mounted %v\n", vol)
 				currentVolInfo = vol
+				info, err := d.readVersionInfo(vol)
+				if err != nil {
+					fmt.Printf("ERROR: failed reading version info: %v\n", err)
+				} else {
+					fmt.Printf("%#v\n", info)
+				}
 			} else if currentVolInfo != nil && vol == nil {
 				// no longer mounted
 				fmt.Printf("Unmounted %v\n", currentVolInfo)
@@ -124,22 +135,30 @@ type FirmwareInfo struct {
 	ReleaseDate string
 }
 
-// KeyboardInfo holds information about the keyboard
-type KeyboardInfo struct {
+// VersionInfo holds information about the keyboard
+type VersionInfo struct {
 	ModelName        string
 	KeyboardFirmware FirmwareInfo
 	LEDFirmware      string
 	LEDBootloader    string
 }
 
+func (d *keyboardVDrive) ReadVersionInfo() (*VersionInfo, error) {
+	vi, err := d.GetVolumeInfo()
+	if err != nil {
+		return nil, fmt.Errorf("couldn't find keyboard volume when trying to read version info: %w", err)
+	}
+	return d.readVersionInfo(vi)
+}
+
 // ReadKeyboardInfo converts the parsed firmware map into a strongly typed KeyboardInfo struct
-func ReadKeyboardInfo(filePath string) (*KeyboardInfo, error) {
-	data, err := readVersionInfo(filePath)
+func (d *keyboardVDrive) readVersionInfo(vi *VolumeInfo) (*VersionInfo, error) {
+	data, err := readVersionFile(vi.Path("firmware", "version.txt"))
 	if err != nil {
 		return nil, fmt.Errorf("failed to read keyboard info: %w", err)
 	}
 	// Create the KeyboardInfo instance
-	info := &KeyboardInfo{}
+	info := &VersionInfo{}
 	var ok bool
 
 	// Map the raw data to the appropriate fields
@@ -179,9 +198,9 @@ func ReadKeyboardInfo(filePath string) (*KeyboardInfo, error) {
 	return info, nil
 }
 
-// readVersionInfo reads the data from a file specified by filePath and parses it into a map.
+// readVersionFile reads the data from a file specified by filePath and parses it into a map.
 // It splits each line at the first colon, using the left half as the key and the right half as the value.
-func readVersionInfo(filePath string) (map[string]string, error) {
+func readVersionFile(filePath string) (map[string]string, error) {
 	// Read the entire file content
 	data, err := os.ReadFile(filePath)
 	if err != nil {
@@ -194,6 +213,10 @@ func readVersionInfo(filePath string) (map[string]string, error) {
 	// Split the content into lines
 	lines := strings.Split(string(data), "\n")
 	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
 		// Split the line by the first colon
 		parts := strings.SplitN(line, ":", 2)
 
