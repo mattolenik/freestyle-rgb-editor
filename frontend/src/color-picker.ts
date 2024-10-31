@@ -3,13 +3,11 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 @customElement('color-picker')
 class ColorPicker extends LitElement {
-    // RGBA properties
     @state() red = 255;
     @state() green = 255;
     @state() blue = 255;
     @state() alpha = 1;
 
-    // Computed property for the hex color code
     get hexColor() {
         const r = this.red.toString(16).padStart(2, '0');
         const g = this.green.toString(16).padStart(2, '0');
@@ -18,7 +16,6 @@ class ColorPicker extends LitElement {
         return `#${r}${g}${b}${a}`;
     }
 
-    // Computed property for the RGBA background color
     get rgbaColor() {
         return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`;
     }
@@ -34,6 +31,7 @@ class ColorPicker extends LitElement {
       align-items: center;
       padding: 0;
       box-sizing: border-box;
+      border-radius: 4px;
     }
     .color-display {
       width: 100%;
@@ -80,8 +78,8 @@ class ColorPicker extends LitElement {
       width: 100%;
       height: 6px;
       border-radius: 4px;
-      background: #ddd;
       outline: none;
+      border: 1px solid rgba(0, 0, 0, 0.5);
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -89,19 +87,29 @@ class ColorPicker extends LitElement {
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background-color: var(--thumb-color, #ffffff);
       cursor: pointer;
       border: 1px solid #888;
     }
-    /* Set slider thumb colors for each channel */
+    .red-slider input[type="range"] {
+      background: linear-gradient(to right, transparent, red);
+    }
     .red-slider input[type="range"]::-webkit-slider-thumb {
       background-color: red;
     }
+    .green-slider input[type="range"] {
+      background: linear-gradient(to right, transparent, #00ff00);
+    }
     .green-slider input[type="range"]::-webkit-slider-thumb {
-      background-color: green;
+      background-color: #00ff00;
+    }
+    .blue-slider input[type="range"] {
+      background: linear-gradient(to right, transparent, blue);
     }
     .blue-slider input[type="range"]::-webkit-slider-thumb {
       background-color: blue;
+    }
+    .alpha-slider input[type="range"] {
+      background: linear-gradient(to right, transparent, #fff);
     }
     .alpha-slider input[type="range"]::-webkit-slider-thumb {
       background-color: #ffffff;
@@ -118,10 +126,8 @@ class ColorPicker extends LitElement {
     render() {
         return html`
       <div class="picker-container">
-        <!-- Inner container with the dynamically set background color -->
         <div class="color-display" style="--current-color: ${this.rgbaColor}">
           <div class="sliders">
-            <!-- Red Slider -->
             <div class="slider-group red-slider">
               <input
                 type="range"
@@ -131,8 +137,6 @@ class ColorPicker extends LitElement {
                 @input="${(e: Event) => this.updateColor(e, 'red')}"
               />
             </div>
-
-            <!-- Green Slider -->
             <div class="slider-group green-slider">
               <input
                 type="range"
@@ -142,8 +146,6 @@ class ColorPicker extends LitElement {
                 @input="${(e: Event) => this.updateColor(e, 'green')}"
               />
             </div>
-
-            <!-- Blue Slider -->
             <div class="slider-group blue-slider">
               <input
                 type="range"
@@ -153,8 +155,6 @@ class ColorPicker extends LitElement {
                 @input="${(e: Event) => this.updateColor(e, 'blue')}"
               />
             </div>
-
-            <!-- Alpha Slider -->
             <div class="slider-group alpha-slider">
               <input
                 type="range"
@@ -166,7 +166,6 @@ class ColorPicker extends LitElement {
               />
             </div>
           </div>
-          <!-- Hex Code Display with Transparent Background on Input -->
           <div class="hex-display">
             <input type="text" .value="${this.hexColor}" readonly />
           </div>
