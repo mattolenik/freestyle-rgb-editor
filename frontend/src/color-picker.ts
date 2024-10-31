@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 
 @customElement('color-picker')
 class ColorPicker extends LitElement {
@@ -18,6 +18,14 @@ class ColorPicker extends LitElement {
 
     get rgbaColor() {
         return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`;
+    }
+
+    get contrastColor() {
+        const scaledRed = this.red * this.alpha;
+        const scaledGreen = this.green * this.alpha;
+        const scaledBlue = this.blue * this.alpha;
+        const luminance = 0.299 * scaledRed + 0.587 * scaledGreen + 0.114 * scaledBlue;
+        return luminance > 128 ? 'black' : 'white';
     }
 
     static styles = css`
@@ -53,11 +61,7 @@ class ColorPicker extends LitElement {
     }
     .hex-display {
       margin-top: auto;
-      text-align: center;
       font-size: 14px;
-      color: #333;
-      background-color: #f5f5f5;
-      border-radius: 4px;
       padding: 5px;
       width: 100%;
       display: flex;
@@ -68,7 +72,7 @@ class ColorPicker extends LitElement {
       background-color: transparent;
       border: none;
       font-size: 14px;
-      color: #333;
+      color: var(--contrast-color);
       width: 100%;
       text-align: center;
       outline: none;
@@ -121,6 +125,23 @@ class ColorPicker extends LitElement {
         const value = color === 'alpha' ? parseFloat(target.value) : parseInt(target.value, 10);
         this[color] = value;
         this.style.setProperty('--current-color', this.rgbaColor);
+        this.style.setProperty('--contrast-color', this.contrastColor);
+    }
+
+    handleHexInput(e: Event) {
+        const hex = (e.target as HTMLInputElement).value;
+        if (hex.length === 7 || hex.length === 9) {
+            const red = parseInt(hex.slice(1, 3), 16);
+            const green = parseInt(hex.slice(3, 5), 16);
+            const blue = parseInt(hex.slice(5, 7), 16);
+            const alpha = hex.length === 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1;
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+            this.alpha = alpha;
+            this.style.setProperty('--current-color', this.rgbaColor);
+            this.style.setProperty('--contrast-color', this.contrastColor);
+        }
     }
 
     render() {
@@ -167,7 +188,11 @@ class ColorPicker extends LitElement {
             </div>
           </div>
           <div class="hex-display">
-            <input type="text" .value="${this.hexColor}" readonly />
+            <input
+              type="text"
+              .value="${this.hexColor}"
+              @input="${this.handleHexInput}"
+            />
           </div>
         </div>
       </div>

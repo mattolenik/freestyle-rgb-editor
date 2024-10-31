@@ -7,18 +7,21 @@
     <script type="module" src="./src/rgb-key.ts"></script>
     <script type="module" src="./src/rgb-keyboard.ts"></script>
     <script type="module" src="./src/color-palette.ts"></script>
+    <script type="module" src="./src/color-picker-hsl.ts"></script>
+    <script type="module" src="./src/color-picker.ts"></script>
     <title>Kinesis Keyboard Customizer</title>
 </head>
 
 <body>
     <div id="app">
         <div id="keyboard">
-            <rgb-keyboard id="keyboard-left" background-url="src/assets/images/keyboard-left.png"></rgb-keyboard>
-            <rgb-keyboard id="keyboard-right" background-url="src/assets/images/keyboard-right.png"></rgb-keyboard>
+            <rgb-keyboard id="keyboard-left" background-url="./src/assets/images/keyboard-left.png"></rgb-keyboard>
+            <rgb-keyboard id="keyboard-right" background-url="./src/assets/images/keyboard-right.png"></rgb-keyboard>
         </div>
         <button id="dump-button">Dump Key Positions to Console</button>
 
         <!-- <color-palette></color-palette> -->
+        <!-- <color-picker-hsl></color-picker-hsl> -->
         <color-picker></color-picker>
     </div>
     <script src="./src/main.ts" type="module"></script>
