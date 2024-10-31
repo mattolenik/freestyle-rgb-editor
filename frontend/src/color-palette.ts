@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import './color-picker'; // Import the color-picker component
+import './color-picker-rgb'; // Import the color-picker component
 
 @customElement('color-palette')
 class ColorPalette extends LitElement {
