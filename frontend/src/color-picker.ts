@@ -85,7 +85,7 @@ class ColorPicker extends LitElement {
     }
     .hex-display {
       margin-top: auto;
-      font-size: 14px;
+      font-size: 16px; /* Adjusted font size */
       padding: 5px;
       width: 100%;
       display: flex;
@@ -95,7 +95,7 @@ class ColorPicker extends LitElement {
     .hex-display input {
       background-color: transparent;
       border: none;
-      font-size: 14px;
+      font-size: 20px; /* Increased font size */
       color: var(--contrast-color);
       width: 100%;
       text-align: center;
