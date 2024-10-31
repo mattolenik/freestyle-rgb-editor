@@ -17,11 +17,22 @@ export class ColorPickerHSLA extends LitElement {
   @state() saturation = 100;
   @state() lightness = 50;
 
+  @state() isHovered = false; // State to track hover status
+
   updated(changedProperties: Map<string, any>) {
     if (changedProperties.has('color')) {
       this.updateColorFromHex(this.color);
     }
     this.updateCSSVariables();
+  }
+
+  // Handle mouse enter and leave to toggle isHovered state
+  handleMouseEnter() {
+    this.isHovered = true;
+  }
+
+  handleMouseLeave() {
+    this.isHovered = false;
   }
 
   // Display the color as a hex RGBA string
@@ -38,10 +49,10 @@ export class ColorPickerHSLA extends LitElement {
     this.updateColorFromHex(value);
   }
 
-  // Calculate contrast color based on RGBA
   get contrastColor() {
     const luminance = 0.299 * this.red + 0.587 * this.green + 0.114 * this.blue;
-    return luminance > 128 ? 'black' : 'white';
+    const adjustedLuminance = luminance * this.alpha;
+    return adjustedLuminance > 128 ? 'black' : 'white';
   }
 
   updateCSSVariables() {
@@ -83,6 +94,11 @@ export class ColorPickerHSLA extends LitElement {
       flex-direction: column;
       gap: 6px;
       width: 100%;
+      opacity: 0; /* Initially hidden */
+      transition: opacity 0.3s ease-in-out; /* Smooth transition */
+    }
+    .sliders.visible {
+      opacity: 1; /* Fully visible when hovered */
     }
     .hex-display {
       margin-top: auto;
@@ -190,17 +206,17 @@ export class ColorPickerHSLA extends LitElement {
       this.hue = 0;
       this.saturation = 0;
     } else {
-      this.saturation = delta / (1 - Math.abs(2 * this.lightness / 100 - 1)) * 100;
+      this.saturation = (delta / (1 - Math.abs(2 * this.lightness / 100 - 1))) * 100;
 
       switch (max) {
         case r:
-          this.hue = ((g - b) / delta) % 6 * 60;
+          this.hue = (((g - b) / delta) % 6) * 60;
           break;
         case g:
-          this.hue = ((b - r) / delta + 2) * 60;
+          this.hue = (((b - r) / delta + 2) * 60);
           break;
         case b:
-          this.hue = ((r - g) / delta + 4) * 60;
+          this.hue = (((r - g) / delta + 4) * 60);
           break;
       }
       if (this.hue < 0) this.hue += 360;
@@ -209,20 +225,52 @@ export class ColorPickerHSLA extends LitElement {
 
   render() {
     return html`
-      <div class="picker-container">
-        <div class="color-display" style="--current-color: rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})">
-          <div class="sliders">
+      <div
+        class="picker-container"
+        @mouseenter="${this.handleMouseEnter}"
+        @mouseleave="${this.handleMouseLeave}"
+      >
+        <div
+          class="color-display"
+          style="--current-color: rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})"
+        >
+          <div class="sliders ${this.isHovered ? 'visible' : ''}">
             <div class="slider-group hue-slider">
-              <input type="range" min="0" max="360" .value="${this.hue}" @input="${(e: Event) => this.updateColor(e, 'hue')}" />
+              <input
+                type="range"
+                min="0"
+                max="360"
+                .value="${this.hue}"
+                @input="${(e: Event) => this.updateColor(e, 'hue')}"
+              />
             </div>
             <div class="slider-group saturation-slider">
-              <input type="range" min="0" max="100" .value="${this.saturation}" @input="${(e: Event) => this.updateColor(e, 'saturation')}" />
+              <input
+                type="range"
+                min="0"
+                max="100"
+                .value="${this.saturation}"
+                @input="${(e: Event) => this.updateColor(e, 'saturation')}"
+              />
             </div>
             <div class="slider-group lightness-slider">
-              <input type="range" min="0" max="100" .value="${this.lightness}" @input="${(e: Event) => this.updateColor(e, 'lightness')}" />
+              <input
+                type="range"
+                min="0"
+                max="100"
+                .value="${this.lightness}"
+                @input="${(e: Event) => this.updateColor(e, 'lightness')}"
+              />
             </div>
             <div class="slider-group alpha-slider">
-              <input type="range" min="0" max="1" step="0.01" .value="${this.alpha}" @input="${(e: Event) => this.updateColor(e, 'alpha')}" />
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                .value="${this.alpha}"
+                @input="${(e: Event) => this.updateColor(e, 'alpha')}"
+              />
             </div>
           </div>
           <div class="hex-display">
