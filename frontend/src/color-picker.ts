@@ -1,12 +1,22 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 
 @customElement('color-picker')
 class ColorPicker extends LitElement {
+    @property({ type: String, reflect: true })
+    color = '#ffffffff'; // Default color in hex format with alpha
+
     @state() red = 255;
     @state() green = 255;
     @state() blue = 255;
     @state() alpha = 1;
+
+    updated(changedProperties: Map<string, any>) {
+        if (changedProperties.has('color')) {
+            this.updateColorFromHex(this.color);
+        }
+        this.updateCSSVariables();
+    }
 
     get hexColor() {
         const r = this.red.toString(16).padStart(2, '0');
@@ -14,6 +24,11 @@ class ColorPicker extends LitElement {
         const b = this.blue.toString(16).padStart(2, '0');
         const a = Math.round(this.alpha * 255).toString(16).padStart(2, '0');
         return `#${r}${g}${b}${a}`;
+    }
+
+    set hexColor(value: string) {
+        this.color = value;
+        this.updateColorFromHex(value);
     }
 
     get rgbaColor() {
@@ -26,6 +41,15 @@ class ColorPicker extends LitElement {
         const scaledBlue = this.blue * this.alpha;
         const luminance = 0.299 * scaledRed + 0.587 * scaledGreen + 0.114 * scaledBlue;
         return luminance > 128 ? 'black' : 'white';
+    }
+
+    updateCSSVariables() {
+        this.style.setProperty('--current-color', this.rgbaColor);
+        this.style.setProperty('--contrast-color', this.contrastColor);
+        this.style.setProperty(
+            '--contrast-color-rgb',
+            this.contrastColor === 'black' ? '0, 0, 0' : '255, 255, 255'
+        );
     }
 
     static styles = css`
@@ -124,31 +148,20 @@ class ColorPicker extends LitElement {
         const target = e.target as HTMLInputElement;
         const value = color === 'alpha' ? parseFloat(target.value) : parseInt(target.value, 10);
         this[color] = value;
-        this.style.setProperty('--current-color', this.rgbaColor);
-        this.style.setProperty('--contrast-color', this.contrastColor);
-        this.style.setProperty(
-            '--contrast-color-rgb',
-            this.contrastColor === 'black' ? '0, 0, 0' : '255, 255, 255'
-        );
+        this.color = this.hexColor;
+        this.updateCSSVariables();
     }
 
     handleHexInput(e: Event) {
-        const hex = (e.target as HTMLInputElement).value;
+        this.hexColor = (e.target as HTMLInputElement).value;
+    }
+
+    updateColorFromHex(hex: string) {
         if (hex.length === 7 || hex.length === 9) {
-            const red = parseInt(hex.slice(1, 3), 16);
-            const green = parseInt(hex.slice(3, 5), 16);
-            const blue = parseInt(hex.slice(5, 7), 16);
-            const alpha = hex.length === 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1;
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-            this.alpha = alpha;
-            this.style.setProperty('--current-color', this.rgbaColor);
-            this.style.setProperty('--contrast-color', this.contrastColor);
-            this.style.setProperty(
-                '--contrast-color-rgb',
-                this.contrastColor === 'black' ? '0, 0, 0' : '255, 255, 255'
-            );
+            this.red = parseInt(hex.slice(1, 3), 16);
+            this.green = parseInt(hex.slice(3, 5), 16);
+            this.blue = parseInt(hex.slice(5, 7), 16);
+            this.alpha = hex.length === 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1;
         }
     }
 
