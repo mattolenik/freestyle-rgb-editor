@@ -83,7 +83,7 @@ class ColorPicker extends LitElement {
       height: 6px;
       border-radius: 4px;
       outline: none;
-      border: 1px solid rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(var(--contrast-color-rgb), 0.5);
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -126,6 +126,10 @@ class ColorPicker extends LitElement {
         this[color] = value;
         this.style.setProperty('--current-color', this.rgbaColor);
         this.style.setProperty('--contrast-color', this.contrastColor);
+        this.style.setProperty(
+            '--contrast-color-rgb',
+            this.contrastColor === 'black' ? '0, 0, 0' : '255, 255, 255'
+        );
     }
 
     handleHexInput(e: Event) {
@@ -141,6 +145,10 @@ class ColorPicker extends LitElement {
             this.alpha = alpha;
             this.style.setProperty('--current-color', this.rgbaColor);
             this.style.setProperty('--contrast-color', this.contrastColor);
+            this.style.setProperty(
+                '--contrast-color-rgb',
+                this.contrastColor === 'black' ? '0, 0, 0' : '255, 255, 255'
+            );
         }
     }
 
