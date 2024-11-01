@@ -67,8 +67,8 @@ export class ColorPickerHSLA extends LitElement {
   static styles = css`
     .picker-container {
       position: relative;
-      width: 180px;
-      height: 180px;
+      width: 140px;
+      height: 140px;
       background-color: black;
       display: flex;
       justify-content: center;
@@ -86,14 +86,15 @@ export class ColorPickerHSLA extends LitElement {
       align-items: center;
       justify-content: flex-start;
       border-radius: 4px;
-      padding: 8px;
+      padding: 0;
       box-sizing: border-box;
     }
     .sliders {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      width: 100%;
+      width: 124px;
+      margin-left:-8px;
       opacity: 0; /* Initially hidden */
       transition: opacity 0.3s ease-in-out; /* Smooth transition */
     }

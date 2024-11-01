@@ -7,13 +7,16 @@ export class ColorPalette extends LitElement {
   static styles = css`
     :host {
       display: block;
-      width: 100%;
+      max-width: 800px; /* Set a fixed max width for the component */
     }
     .palette-container {
       display: grid;
       grid-template-columns: repeat(8, 1fr);
       grid-template-rows: repeat(2, auto);
       gap: 10px;
+      width: 100%;
+      max-width: 800px; /* Same as the fixed max width */
+      box-sizing: border-box;
       transition: all 0.3s ease;
     }
     @media (max-width: 600px) {
