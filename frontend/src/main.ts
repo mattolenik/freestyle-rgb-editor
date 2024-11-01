@@ -1,26 +1,26 @@
-import './style.css';
-import './app.css';
+import './style.css'
+import './app.css'
 
-import { RGBKeyboard } from './rgb-keyboard.js';
-const keyboardLeftElement = document.getElementById('keyboard-left') as RGBKeyboard;
-const keyboardRightElement = document.getElementById('keyboard-right') as RGBKeyboard;
-const dumpButton = document.getElementById('dump-button')!;
+import { RGBKeyboard } from './rgb-keyboard.js'
+const keyboardLeftElement = document.getElementById('keyboard-left') as RGBKeyboard
+const keyboardRightElement = document.getElementById('keyboard-right') as RGBKeyboard
+const dumpButton = document.getElementById('dump-button')!
 
 dumpButton.addEventListener('click', () => {
     // Access the getKeyPositions method and log the output
-    const tsLeft = keyboardLeftElement.getKeyPositions();
-    const tsRight = keyboardRightElement.getKeyPositions();
-    console.log('Left side key positions (TypeScript representation):');
-    console.log(tsLeft);
-    console.log('Right side key positions (TypeScript representation):');
-    console.log(tsRight);
-});
+    const tsLeft = keyboardLeftElement.getKeyPositions()
+    const tsRight = keyboardRightElement.getKeyPositions()
+    console.log('Left side key positions (TypeScript representation):')
+    console.log(tsLeft)
+    console.log('Right side key positions (TypeScript representation):')
+    console.log(tsRight)
+})
 
-const xOffsetLeft = 0;
-const yOffsetLeft = 0;
+const xOffsetLeft = 0
+const yOffsetLeft = 0
 
-const xOffsetRight = 0;
-const yOffsetRight = 0;
+const xOffsetRight = 0
+const yOffsetRight = 0
 
 const leftHalfKeys = new Map<string, [number, number]>([
     ['«', [70, 142]],
@@ -69,8 +69,8 @@ const leftHalfKeys = new Map<string, [number, number]>([
     ['Ctrl', [178, 426]],
     ['⊞', [245, 424]],
     ['Alt', [303, 425]],
-    ['Space', [452, 425]]
-]);
+    ['Space', [452, 425]],
+])
 
 const rightHalfKeys = new Map<string, [number, number]>([
     ['F7', [70, 145]],
@@ -119,16 +119,16 @@ const rightHalfKeys = new Map<string, [number, number]>([
     ['CtrlR', [316, 425]],
     ['←', [387, 425]],
     ['↓', [441, 425]],
-    ['→', [493, 425]]
-]);
+    ['→', [493, 425]],
+])
 
 for (const [key, [x, y]] of leftHalfKeys) {
-    leftHalfKeys.set(key, [x + xOffsetLeft, y + yOffsetLeft]);
+    leftHalfKeys.set(key, [x + xOffsetLeft, y + yOffsetLeft])
 }
 
 for (const [key, [x, y]] of rightHalfKeys) {
-    rightHalfKeys.set(key, [x + xOffsetRight, y + yOffsetRight]);
+    rightHalfKeys.set(key, [x + xOffsetRight, y + yOffsetRight])
 }
 
-keyboardLeftElement.keyPositions = leftHalfKeys;
-keyboardRightElement.keyPositions = rightHalfKeys;
+keyboardLeftElement.keyPositions = leftHalfKeys
+keyboardRightElement.keyPositions = rightHalfKeys
