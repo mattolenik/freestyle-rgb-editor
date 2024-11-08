@@ -17,22 +17,11 @@ export class ColorPickerHSLA extends LitElement {
     @state() saturation = 100
     @state() lightness = 50
 
-    @state() isHovered = false // State to track hover status
-
     updated(changedProperties: Map<string, any>) {
         if (changedProperties.has('color')) {
             this.updateColorFromHex(this.color)
         }
         this.updateCSSVariables()
-    }
-
-    // Handle mouse enter and leave to toggle isHovered state
-    handleMouseEnter() {
-        this.isHovered = true
-    }
-
-    handleMouseLeave() {
-        this.isHovered = false
     }
 
     // Display the color as a hex RGBA string
@@ -51,10 +40,10 @@ export class ColorPickerHSLA extends LitElement {
         this.updateColorFromHex(value)
     }
 
+    // Calculate contrast color based on RGBA
     get contrastColor() {
         const luminance = 0.299 * this.red + 0.587 * this.green + 0.114 * this.blue
-        const adjustedLuminance = luminance * this.alpha
-        return adjustedLuminance > 128 ? 'black' : 'white'
+        return luminance > 128 ? 'black' : 'white'
     }
 
     updateCSSVariables() {
@@ -66,8 +55,8 @@ export class ColorPickerHSLA extends LitElement {
     static styles = css`
         .picker-container {
             position: relative;
-            width: 140px;
-            height: 140px;
+            width: 180px;
+            height: 180px;
             background-color: black;
             display: flex;
             justify-content: center;
@@ -85,20 +74,19 @@ export class ColorPickerHSLA extends LitElement {
             align-items: center;
             justify-content: flex-start;
             border-radius: 4px;
-            padding: 0;
+            padding: 8px;
             box-sizing: border-box;
         }
         .sliders {
             display: flex;
             flex-direction: column;
             gap: 6px;
-            width: 124px;
-            margin-left: -8px;
-            opacity: 0; /* Initially hidden */
-            transition: opacity 0.3s ease-in-out; /* Smooth transition */
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .sliders.visible {
-            opacity: 1; /* Fully visible when hovered */
+        .picker-container:hover .sliders {
+            opacity: 1;
         }
         .hex-display {
             margin-top: auto;
@@ -132,8 +120,25 @@ export class ColorPickerHSLA extends LitElement {
             width: 14px;
             height: 14px;
             border-radius: 50%;
+            background-color: transparent;
+            border: 1px solid rgba(var(--contrast-color-rgb), 0.5);
             cursor: pointer;
-            border: 1px solid #888;
+        }
+        input[type='range']::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: 1px solid rgba(var(--contrast-color-rgb), 0.5);
+            cursor: pointer;
+        }
+        input[type='range']::-ms-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: 1px solid rgba(var(--contrast-color-rgb), 0.5);
+            cursor: pointer;
         }
         .hue-slider input[type='range'] {
             background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red);
@@ -225,12 +230,12 @@ export class ColorPickerHSLA extends LitElement {
 
     render() {
         return html`
-            <div class="picker-container" @mouseenter="${this.handleMouseEnter}" @mouseleave="${this.handleMouseLeave}">
+            <div class="picker-container">
                 <div
                     class="color-display"
                     style="--current-color: rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})"
                 >
-                    <div class="sliders ${this.isHovered ? 'visible' : ''}">
+                    <div class="sliders">
                         <div class="slider-group hue-slider">
                             <input
                                 type="range"
