@@ -53,16 +53,13 @@ export class ColorPickerHSLA extends LitElement {
     }
 
     static styles = css`
-        .picker-container {
-            position: relative;
+        :host {
+            // position: relative;
             width: 180px;
             height: 180px;
             background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-            box-sizing: border-box;
+            // display: flex;
+            // box-sizing: border-box;
             border-radius: 4px;
         }
         .color-display {
@@ -230,53 +227,51 @@ export class ColorPickerHSLA extends LitElement {
 
     render() {
         return html`
-            <div class="picker-container">
-                <div
-                    class="color-display"
-                    style="--current-color: rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})"
-                >
-                    <div class="sliders">
-                        <div class="slider-group hue-slider">
-                            <input
-                                type="range"
-                                min="0"
-                                max="360"
-                                .value="${this.hue}"
-                                @input="${(e: Event) => this.updateColor(e, 'hue')}"
-                            />
-                        </div>
-                        <div class="slider-group saturation-slider">
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                .value="${this.saturation}"
-                                @input="${(e: Event) => this.updateColor(e, 'saturation')}"
-                            />
-                        </div>
-                        <div class="slider-group lightness-slider">
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                .value="${this.lightness}"
-                                @input="${(e: Event) => this.updateColor(e, 'lightness')}"
-                            />
-                        </div>
-                        <div class="slider-group alpha-slider">
-                            <input
-                                type="range"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                .value="${this.alpha}"
-                                @input="${(e: Event) => this.updateColor(e, 'alpha')}"
-                            />
-                        </div>
+            <div
+                class="color-display"
+                style="--current-color: rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})"
+            >
+                <div class="sliders">
+                    <div class="slider-group hue-slider">
+                        <input
+                            type="range"
+                            min="0"
+                            max="360"
+                            .value="${this.hue}"
+                            @input="${(e: Event) => this.updateColor(e, 'hue')}"
+                        />
                     </div>
-                    <div class="hex-display">
-                        <input type="text" .value="${this.hexColor}" @input="${this.handleHexInput}" />
+                    <div class="slider-group saturation-slider">
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            .value="${this.saturation}"
+                            @input="${(e: Event) => this.updateColor(e, 'saturation')}"
+                        />
                     </div>
+                    <div class="slider-group lightness-slider">
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            .value="${this.lightness}"
+                            @input="${(e: Event) => this.updateColor(e, 'lightness')}"
+                        />
+                    </div>
+                    <div class="slider-group alpha-slider">
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            .value="${this.alpha}"
+                            @input="${(e: Event) => this.updateColor(e, 'alpha')}"
+                        />
+                    </div>
+                </div>
+                <div class="hex-display">
+                    <input type="text" .value="${this.hexColor}" @input="${this.handleHexInput}" />
                 </div>
             </div>
         `

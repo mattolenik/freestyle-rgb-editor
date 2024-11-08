@@ -7,11 +7,9 @@ export class ColorPalette extends LitElement {
     static styles = css`
         :host {
             display: block;
-            max-width: 800px; /* Set a fixed max width for the component */
-        }
-        .palette-container {
+            max-width: 1130px; /* Set a fixed max width for the component */
             display: grid;
-            grid-template-columns: repeat(8, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             grid-template-rows: repeat(2, auto);
             gap: 10px;
             width: 100%;
@@ -28,10 +26,6 @@ export class ColorPalette extends LitElement {
     `
 
     render() {
-        return html`
-            <div class="palette-container">
-                ${Array.from({ length: 16 }, () => html`<color-picker-hsla></color-picker-hsla>`)}
-            </div>
-        `
+        return html` ${Array.from({ length: 12 }, () => html`<color-picker-hsla></color-picker-hsla>`)} `
     }
 }
