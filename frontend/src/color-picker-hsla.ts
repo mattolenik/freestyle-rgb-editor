@@ -201,7 +201,7 @@ export class ColorPickerHSLA extends LitElement {
             height: 180px;
             background-color: black;
             border-radius: 4px;
-            --slider-height: 10px;
+            --slider-height: 14px;
         }
         :host(:hover) .sliders {
             opacity: 1;
@@ -249,28 +249,39 @@ export class ColorPickerHSLA extends LitElement {
             width: 100%;
             height: var(--slider-height);
             border-radius: 4px;
+            // overflow: hidden;
             outline: none;
             border: 1px solid var(--contrast-color-rgba);
         }
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 10px;
-            height: 24px;
+            height: 26px;
             border: 1px solid var(--contrast-color-rgba);
             cursor: pointer;
             border-radius: 4px;
         }
         .hue-slider input[type='range'] {
             background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red);
+            background-repeat: no-repeat; // prevents artifacts
         }
         .saturation-slider input[type='range'] {
             background: linear-gradient(to right, gray, var(--current-color));
+            background-repeat: no-repeat; // prevents artifacts
         }
         .lightness-slider input[type='range'] {
             background: linear-gradient(to right, black, var(--current-color), white);
+            background-repeat: no-repeat; // prevents artifacts
         }
         .alpha-slider input[type='range'] {
-            background: linear-gradient(to right, transparent, var(--current-color));
+            background: linear-gradient(to right, transparent, var(--current-color)),
+                repeating-linear-gradient(
+                    -45deg,
+                    rgba(128, 128, 128, 0.3) 0px,
+                    rgba(128, 128, 128, 0.3) 6px,
+                    rgba(220, 220, 220, 0.3) 6px,
+                    rgba(220, 220, 220, 0.3) 12px
+                );
         }
     `
 
