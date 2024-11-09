@@ -16,13 +16,6 @@ export class ColorPalette extends LitElement {
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
-        @media (max-width: 800px) {
-            .palette-container {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(8, auto);
-                width: 0;
-            }
-        }
     `
 
     render() {

@@ -9,22 +9,15 @@ export class RGBKey extends LitElement {
     static styles = css`
         :host {
             display: inline-block;
-            width: 40px; /* You can adjust this size */
-            height: 40px; /* You can adjust this size */
+            width: 40px;
+            height: 40px;
             line-height: 40px; /* Center text vertically */
             text-align: center;
-            font-size: 14px; /* Smaller text size */
-            color: var(--key-color, #ffffff);
+            font-size: 14px;
             background-color: transparent;
             user-select: none;
         }
     `
-
-    updated(changedProperties: Map<string, any>) {
-        if (changedProperties.has('color')) {
-            this.style.setProperty('--key-color', this.color)
-        }
-    }
 
     render() {
         return html`
