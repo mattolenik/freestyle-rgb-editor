@@ -82,7 +82,7 @@ export class ColorPickerHSLA extends LitElement {
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .picker-container:hover .sliders {
+        :host(:hover) .sliders {
             opacity: 1;
         }
         .hex-display {
