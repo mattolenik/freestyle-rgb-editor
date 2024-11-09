@@ -1,4 +1,3 @@
-import './style.css'
 import './app.css'
 
 import { RGBKeyboard } from './rgb-keyboard.js'

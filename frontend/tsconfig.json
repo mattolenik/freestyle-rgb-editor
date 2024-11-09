@@ -1,33 +1,32 @@
 {
     "compilerOptions": {
-        "target": "ES2022", // Target latest ECMAScript version
-        "module": "ESNext", // Use the latest module system
+        "target": "ES2022",
+        "module": "ESNext",
         "lib": [
             "DOM",
             "ES2022"
-        ], // Include DOM and ECMAScript 2022 libraries
+        ],
         "moduleResolution": "Bundler",
         "allowSyntheticDefaultImports": true, // Allow default imports from modules without default exports
         "esModuleInterop": true, // Compatibility for importing CommonJS modules
         "strict": true, // Enable strict type-checking
         "skipLibCheck": true, // Skip type checking of declaration files
-        "forceConsistentCasingInFileNames": true, // Ensure consistent casing in imports
-        "experimentalDecorators": true, // Enable support for decorators
-        "emitDecoratorMetadata": true, // Emit metadata for decorators (optional)
-        "useDefineForClassFields": false, // Use traditional assignment for class fields
-        "resolveJsonModule": true, // Allow importing JSON files
-        "sourceMap": true, // Generate source maps for debugging
-        "outDir": "./dist", // Output directory for compiled files
-        "rootDir": "./src", // Root directory of your source files
+        "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "useDefineForClassFields": false,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
         "typeRoots": [
             "./node_modules/@types"
-        ], // Include type definitions
+        ],
         "noEmit": false // Make sure to emit compiled JavaScript files
     },
     "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx"
-    ], // Adjust if you use `.tsx` for React
+        "src/**/*.ts"
+    ],
     "exclude": [
         "node_modules",
         "dist"

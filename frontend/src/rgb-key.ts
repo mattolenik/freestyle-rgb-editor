@@ -11,7 +11,7 @@ export class RGBKey extends LitElement {
             display: inline-block;
             width: 40px;
             height: 40px;
-            line-height: 40px; /* Center text vertically */
+            line-height: 40px;
             text-align: center;
             font-size: 14px;
             background-color: transparent;

@@ -1,13 +1,13 @@
 import { LitElement, html, css } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import './color-picker-hsla' // Make sure to import your existing color-picker-hsla component
+import './color-picker-hsla'
 
 @customElement('color-palette')
 export class ColorPalette extends LitElement {
     static styles = css`
         :host {
             display: block;
-            max-width: 1130px; /* Set a fixed max width for the component */
+            max-width: 1130px;
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             grid-template-rows: repeat(2, auto);
