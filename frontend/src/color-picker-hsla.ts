@@ -40,32 +40,39 @@ export class ColorPickerHSLA extends LitElement {
         this.updateColorFromHex(value)
     }
 
-    // Calculate contrast color based on RGBA
+    get adjustedLuminance() {
+        return (0.299 * this.red + 0.587 * this.green + 0.114 * this.blue) * this.alpha
+    }
+
     get contrastColor() {
-        const luminance = 0.299 * this.red + 0.587 * this.green + 0.114 * this.blue
-        return luminance * this.alpha > 128 ? 'black' : 'white'
+        return this.adjustedLuminance > 128 ? 'black' : 'white'
+    }
+
+    get contrastColorRGBA() {
+        return this.adjustedLuminance > 128 ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'
     }
 
     updateCSSVariables() {
         this.style.setProperty('--current-color', `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`)
         this.style.setProperty('--contrast-color', this.contrastColor)
-        this.style.setProperty('--contrast-color-rgb', this.contrastColor === 'black' ? '0, 0, 0' : '255, 255, 255')
+        this.style.setProperty('--contrast-color-rgba', this.contrastColorRGBA)
     }
 
     static styles = css`
         :host {
-            // position: relative;
             width: 180px;
             height: 180px;
             background-color: black;
-            // display: flex;
-            // box-sizing: border-box;
             border-radius: 4px;
+            --slider-height: 10px;
+        }
+        :host(:hover) .sliders {
+            opacity: 1;
         }
         .color-display {
             width: 100%;
             height: 100%;
-            background-color: var(--current-color, rgba(255, 255, 255, 1));
+            background-color: var(--current-color);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -77,13 +84,10 @@ export class ColorPickerHSLA extends LitElement {
         .sliders {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
             width: 100%;
             opacity: 0;
             transition: opacity 0.3s ease;
-        }
-        :host(:hover) .sliders {
-            opacity: 1;
         }
         .hex-display {
             margin-top: auto;
@@ -106,36 +110,18 @@ export class ColorPickerHSLA extends LitElement {
         input[type='range'] {
             -webkit-appearance: none;
             width: 100%;
-            height: 6px;
+            height: var(--slider-height);
             border-radius: 4px;
             outline: none;
-            border: 1px solid rgba(var(--contrast-color-rgb), 0.5);
+            border: 1px solid var(--contrast-color-rgba);
         }
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background-color: transparent;
-            border: 1px solid rgba(var(--contrast-color-rgb), 0.5);
+            width: 10px;
+            height: 24px;
+            border: 1px solid var(--contrast-color-rgba);
             cursor: pointer;
-        }
-        input[type='range']::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background-color: transparent;
-            border: 1px solid rgba(var(--contrast-color-rgb), 0.5);
-            cursor: pointer;
-        }
-        input[type='range']::-ms-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background-color: transparent;
-            border: 1px solid rgba(var(--contrast-color-rgb), 0.5);
-            cursor: pointer;
+            border-radius: 4px;
         }
         .hue-slider input[type='range'] {
             background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red);
