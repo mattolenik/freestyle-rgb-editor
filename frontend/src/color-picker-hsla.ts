@@ -209,7 +209,6 @@ export class ColorPickerHSLA extends LitElement {
             width: 180px;
             height: 180px;
             background-color: black;
-            border-radius: 4px;
             --slider-height: 14px;
         }
         :host(:hover) .sliders {
@@ -223,7 +222,7 @@ export class ColorPickerHSLA extends LitElement {
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            border-radius: 4px;
+            border-radius: 6px;
             padding: 8px;
             box-sizing: border-box;
         }
