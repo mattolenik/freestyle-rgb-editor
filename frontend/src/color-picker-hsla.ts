@@ -65,7 +65,7 @@ export class ColorPickerHSLA extends LitElement {
             let stepSize: number
             switch (color) {
                 case 'hue':
-                    stepSize = 360 / 9
+                    stepSize = 360 / 9 // for the ROYGBIV color stops
                     break
                 case 'lightness':
                 case 'saturation':
