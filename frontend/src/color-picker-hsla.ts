@@ -18,7 +18,7 @@ export class ColorPickerHSLA extends LitElement {
     @state() lightness = 50
 
     private disableSnapping = false
-    private enableWideSnapping = false
+    private enableFineSnapping = false
     private firstHueChange = true
 
     constructor() {
@@ -42,8 +42,9 @@ export class ColorPickerHSLA extends LitElement {
     handleKeyDown(e: KeyboardEvent) {
         if (e.key === 'Meta' || e.key === 'Control') {
             this.disableSnapping = true
-        } else if (e.key === 'Shift') {
-            this.enableWideSnapping = true
+        }
+        if (e.key === 'Shift') {
+            this.enableFineSnapping = true
         }
     }
 
@@ -52,7 +53,7 @@ export class ColorPickerHSLA extends LitElement {
             this.disableSnapping = false
         }
         if (e.key === 'Shift') {
-            this.enableWideSnapping = false
+            this.enableFineSnapping = false
         }
     }
 
@@ -61,23 +62,31 @@ export class ColorPickerHSLA extends LitElement {
         let value = color === 'alpha' ? parseFloat(target.value) : parseInt(target.value, 10)
 
         if (!this.disableSnapping) {
-            let stepSize = color === 'hue' ? 100 / 7 : color === 'alpha' ? 0.1 : 10
-            stepSize *= this.enableWideSnapping ? 2 : 1
+            let stepSize: number
+            switch (color) {
+                case 'hue':
+                    stepSize = 360 / 9
+                    break
+                case 'lightness':
+                case 'saturation':
+                    stepSize = 20
+                    break
+                case 'alpha':
+                    stepSize = 0.2
+                    break
+            }
+            stepSize *= this.enableFineSnapping ? 0.5 : 1
+
             const middle = new Number(target.max).valueOf() / 2
             let nearestSnapPoint = Math.round(value / stepSize) * stepSize
+
             if (Math.abs(middle - nearestSnapPoint) < stepSize / 1.66) {
                 nearestSnapPoint = middle
             }
             if (Math.abs(value - nearestSnapPoint) < stepSize / 2) {
                 value = nearestSnapPoint
-                target.value = value.toString() // Visually update the slider
+                target.value = value.toString() // visually update the slider
             }
-            // const snapPoint = 50
-            // const snapThreshold = 5
-            // if (Math.abs(value - snapPoint) < snapThreshold) {
-            //     value = snapPoint
-            //     target.value = value.toString() // Visually update the slider
-            // }
         }
 
         if (color === 'hue' && this.firstHueChange) {
