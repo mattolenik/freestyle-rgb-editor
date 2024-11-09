@@ -43,7 +43,7 @@ export class ColorPickerHSLA extends LitElement {
     // Calculate contrast color based on RGBA
     get contrastColor() {
         const luminance = 0.299 * this.red + 0.587 * this.green + 0.114 * this.blue
-        return luminance > 128 ? 'black' : 'white'
+        return luminance * this.alpha > 128 ? 'black' : 'white'
     }
 
     updateCSSVariables() {
