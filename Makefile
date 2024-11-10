@@ -1,11 +1,11 @@
 MODULE   := $(shell awk 'NR==1{print $$2}' go.mod)
 VERSION  := $(shell echo $$(ver=$$(git tag -l --points-at HEAD) && [ -z $$ver ] && ver=$$(git describe --always --dirty); echo $$ver))
-LDFLAGS  := -s -w -X $(MODULE)/meta.Version=$(VERSION) 
+LDFLAGS  := -s -w -X $(MODULE)/meta.Version=$(VERSION)
 DIST     := build/bin
 WAILS    := go run -mod=vendor github.com/wailsapp/wails/v2/cmd/wails
 
 start:
-	$(WAILS) dev
+	$(WAILS) dev -ldflags "$(LDFLAGS)"
 
 dev: start
 

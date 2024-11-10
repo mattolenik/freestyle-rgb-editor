@@ -2,15 +2,21 @@ package main
 
 import (
 	"embed"
+	"fmt"
+	"kinesis-customizer/meta"
 	"os"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/mac"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+//go:embed build/appicon.png
+var appicon []byte
 
 func main() {
 	// Create an instance of the app structure
@@ -22,6 +28,7 @@ func main() {
 		Width:         1200,
 		Height:        1200,
 		DisableResize: true,
+		Fullscreen:    false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -31,8 +38,13 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
-		// Mac: &mac.Options{
-		// },
+		Mac: &mac.Options{
+			About: &mac.AboutInfo{
+				Title:   "Kinesis Keyboard Customizer",
+				Message: fmt.Sprintf("v%s\nhttps://github.com/mattolenik/kinesis-customizer", meta.Version),
+				Icon:    appicon,
+			},
+		},
 	})
 
 	if err != nil {
