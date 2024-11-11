@@ -17,6 +17,7 @@ export class RGBKey extends LitElement {
             display: inline-block;
             text-align: center;
             font-size: 14px;
+            font-family: 'Quantify';
             background-color: transparent;
             user-select: none;
         }

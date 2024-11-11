@@ -9,7 +9,6 @@ export class RGBKeyboard extends LitElement {
     @state()
     public keys: Map<string, { X: number; Y: number; W: string; H: string }> = new Map()
 
-    // Background image URL as an attribute
     @property({ type: String, attribute: 'background-url' })
     backgroundUrl: string = ''
 
@@ -163,7 +162,6 @@ export class RGBKeyboard extends LitElement {
         event.preventDefault()
     }
 
-    // Expose key positions as a method
     getKeyPositions(): string {
         // Dump a copy/pastable TS map of key positions and sizes
         const tsRepresentation = `new Map<string, { X: number, Y: number, W: string, H: string }>([\n${Array.from(

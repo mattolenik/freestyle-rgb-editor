@@ -23,6 +23,14 @@ body {
         url("fonts/nunito-v16-latin-regular.woff2") format("woff2");
 }
 
+@font-face {
+    font-family: "Quantify";
+    font-style: bold;
+    font-weight: 400;
+    src: local(""),
+        url("fonts/quantify-bold.ttf");
+}
+
 #app {
     height: 100vh;
     text-align: center;
