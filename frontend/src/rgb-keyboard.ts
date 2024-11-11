@@ -6,9 +6,8 @@ const isDev = false
 
 @customElement('rgb-keyboard')
 export class RGBKeyboard extends LitElement {
-    // A Map to store key labels and their positions as [x, y] tuples
     @state()
-    public keyPositions: Map<string, [number, number]> = new Map()
+    public keys: Map<string, { X: number; Y: number; W: string; H: string }> = new Map()
 
     // Background image URL as an attribute
     @property({ type: String, attribute: 'background-url' })
@@ -77,9 +76,9 @@ export class RGBKeyboard extends LitElement {
 
         // Start dragging and calculate the initial offsets
         this.draggingKeyLabel = label
-        const [currentX, currentY] = this.keyPositions.get(label) || [0, 0]
-        this.offsetX = event.clientX - currentX
-        this.offsetY = event.clientY - currentY
+        const { X, Y } = this.keys.get(label) || { X: 0, Y: 0, W: '0px', H: '0px' } // Current positions
+        this.offsetX = event.clientX - X
+        this.offsetY = event.clientY - Y
 
         // Focus the key when clicked
         this.focusedKeyLabel = label
@@ -106,8 +105,9 @@ export class RGBKeyboard extends LitElement {
             newX = Math.max(keyWidth / 2, Math.min(newX, containerWidth - keyWidth / 2))
             newY = Math.max(keyHeight / 2, Math.min(newY, containerHeight - keyHeight / 2))
 
-            // Update the key position reactively
-            this.keyPositions = new Map(this.keyPositions).set(this.draggingKeyLabel, [newX, newY])
+            //this.keyPositions = new Map(this.keyPositions).set(this.draggingKeyLabel, [newX, newY])
+            this.keys.get(this.draggingKeyLabel)!.X = newX
+            this.keys.get(this.draggingKeyLabel)!.Y = newY
         }
     }
 
@@ -124,9 +124,9 @@ export class RGBKeyboard extends LitElement {
         if (!this.focusedKeyLabel || !this.containerRect) return
 
         // Get the current position of the focused key
-        const [currentX, currentY] = this.keyPositions.get(this.focusedKeyLabel) || [0, 0]
-        let newX = currentX
-        let newY = currentY
+        const { X, Y } = this.keys.get(this.focusedKeyLabel) || { X: 0, Y: 0, W: '0px', H: '0px' } // Current positions
+        let newX = X
+        let newY = Y
 
         // Adjust position based on arrow key input
         switch (event.key) {
@@ -156,7 +156,8 @@ export class RGBKeyboard extends LitElement {
         newY = Math.max(keyHeight / 2, Math.min(newY, containerHeight - keyHeight / 2))
 
         // Update the position of the focused key
-        this.keyPositions = new Map(this.keyPositions).set(this.focusedKeyLabel, [newX, newY])
+        this.keys.get(this.focusedKeyLabel)!.X = newX
+        this.keys.get(this.focusedKeyLabel)!.Y = newY
 
         // Prevent default behavior like scrolling
         event.preventDefault()
@@ -164,9 +165,11 @@ export class RGBKeyboard extends LitElement {
 
     // Expose key positions as a method
     getKeyPositions(): string {
-        // Create a TypeScript-compatible string representation of the keyPositions map
-        const tsRepresentation = `new Map<string, [number, number]>([\n${Array.from(this.keyPositions.entries())
-            .map(([label, [x, y]]) => `  ['${label}', [${x}, ${y}]]`)
+        // Dump a copy/pastable TS map of key positions and sizes
+        const tsRepresentation = `new Map<string, { X: number, Y: number, W: string, H: string }>([\n${Array.from(
+            this.keys.entries()
+        )
+            .map(([label, { X, Y, W, H }]) => `  ['${label}', { X: ${X}, Y: ${Y}, W: "${W}", H: "${H}" }]`)
             .join(',\n')}\n])`
 
         return tsRepresentation
@@ -175,12 +178,14 @@ export class RGBKeyboard extends LitElement {
     render() {
         return html`
             <div style="width: 100%; height: 100%; background-image: url('${this.backgroundUrl}');">
-                ${Array.from(this.keyPositions.entries()).map(([label, [x, y]]) => {
+                ${Array.from(this.keys.entries()).map(([label, { X, Y, W, H }]) => {
                     return html`
                         <rgb-key
                             class="key"
                             tabindex="0"
-                            style="left: ${x}px; top: ${y}px;"
+                            style="left: ${X}px; top: ${Y}px;"
+                            width="${W}"
+                            height="${H}"
                             @mousedown="${(e: MouseEvent) => this.onMouseDown(e, label)}"
                             @blur="${() => (this.focusedKeyLabel = null)}"
                         >

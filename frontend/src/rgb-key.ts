@@ -3,15 +3,18 @@ import { customElement, property } from 'lit/decorators.js'
 
 @customElement('rgb-key')
 export class RGBKey extends LitElement {
-    @property({ type: String })
+    @property({ type: String, reflect: true })
     color: string = '#FFFFFF'
+
+    @property({ type: String, reflect: true })
+    width: String = '40px'
+
+    @property({ type: String, reflect: true })
+    height: String = '40px'
 
     static styles = css`
         :host {
             display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
             text-align: center;
             font-size: 14px;
             background-color: transparent;
@@ -21,7 +24,9 @@ export class RGBKey extends LitElement {
 
     render() {
         return html`
-            <div style="color: ${this.color};">
+            <div
+                style="color: ${this.color}; width: ${this.width}; height: ${this.height}; line-height: ${this.height};"
+            >
                 <slot></slot>
             </div>
         `
