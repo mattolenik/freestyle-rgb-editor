@@ -20,7 +20,7 @@ export class RGBKeyboard extends LitElement {
     private offsetY = 0
 
     // Reference to the container for boundary checks
-    private containerRect: DOMRect | null = null
+    private containerRect?: DOMRect
 
     static styles = css`
         :host {
