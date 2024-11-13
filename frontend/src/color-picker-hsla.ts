@@ -251,6 +251,8 @@ export class ColorPickerHSLA extends LitElement {
             width: 100%;
             text-align: center;
             outline: none;
+            font-family: 'FiraCode Nerd Font';
+            // text-transform: uppercase;
         }
         input[type='range'] {
             -webkit-appearance: none;

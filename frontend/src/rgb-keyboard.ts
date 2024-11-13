@@ -36,7 +36,7 @@ export class RGBKeyboard extends LitElement {
         }
 
         .key:focus {
-            outline: 2px solid blue;
+            outline: 1px solid blue;
         }
     `
 
