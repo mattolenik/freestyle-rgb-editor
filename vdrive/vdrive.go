@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"kinesis-customizer/keyboard"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -40,6 +41,23 @@ type keyboardVDrive struct {
 
 func New(kbName keyboard.KeyboardID) VDrive {
 	return &keyboardVDrive{name: kbName}
+}
+
+func WatchForKeyboard(ctx context.Context, usbInfo keyboard.KeyboardUsbInfo, present *bool) error {
+	for {
+		p, err := IsKeyboardPresent(usbInfo)
+		if err != nil {
+			log.Printf("error listing USB devices, ignoring: %s", err)
+		} else {
+			*present = p
+		}
+		time.Sleep(1 * time.Second)
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+		}
+	}
 }
 
 func IsKeyboardPresent(usbInfo keyboard.KeyboardUsbInfo) (bool, error) {
