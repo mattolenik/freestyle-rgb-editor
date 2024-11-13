@@ -136,6 +136,13 @@ export class ColorPickerHSLA extends LitElement {
     }
 
     updateCSSVariables() {
+        this.style.setProperty('--red', `${this.red}`)
+        this.style.setProperty('--green', `${this.green}`)
+        this.style.setProperty('--blue', `${this.blue}`)
+        this.style.setProperty('--hue', `${this.hue}`)
+        this.style.setProperty('--saturation', `${this.saturation}%`)
+        this.style.setProperty('--lightness', `${this.lightness}%`)
+        this.style.setProperty('--alpha', `${this.alpha}`)
         this.style.setProperty('--current-color', `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`)
         this.style.setProperty('--contrast-color', this.contrastColor)
         this.style.setProperty('--contrast-color-rgba', this.contrastColorRGBA)
@@ -209,7 +216,9 @@ export class ColorPickerHSLA extends LitElement {
             width: 180px;
             height: 180px;
             background-color: black;
+            border-radius: var(--border-radius);
             --slider-height: 14px;
+            --border-radius: 6px;
         }
         :host(:hover) .sliders {
             opacity: 1;
@@ -222,14 +231,14 @@ export class ColorPickerHSLA extends LitElement {
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            border-radius: 6px;
+            border-radius: var(--border-radius);
             padding: 8px;
             box-sizing: border-box;
         }
         .sliders {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 13px;
             width: 100%;
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -261,7 +270,7 @@ export class ColorPickerHSLA extends LitElement {
             border-radius: 4px;
             // overflow: hidden;
             outline: none;
-            border: 1px solid var(--contrast-color-rgba);
+            box-shadow: 2px 2px 2px #00000055;
         }
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -276,11 +285,20 @@ export class ColorPickerHSLA extends LitElement {
             background-repeat: no-repeat; // prevents artifacts
         }
         .saturation-slider input[type='range'] {
-            background: linear-gradient(to right, gray, var(--current-color));
+            background: linear-gradient(
+                to right,
+                hsla(var(--hue), 0%, var(--lightness), var(--alpha)),
+                hsla(var(--hue), 100%, var(--lightness), var(--alpha))
+            );
             background-repeat: no-repeat; // prevents artifacts
         }
         .lightness-slider input[type='range'] {
-            background: linear-gradient(to right, black, var(--current-color), white);
+            background: linear-gradient(
+                to right,
+                black,
+                hsla(var(--hue), var(--saturation), 50%, var(--alpha)),
+                hsla(0, 100%, 100%, var(--alpha))
+            );
             background-repeat: no-repeat; // prevents artifacts
         }
         .alpha-slider input[type='range'] {
@@ -297,10 +315,7 @@ export class ColorPickerHSLA extends LitElement {
 
     render() {
         return html`
-            <div
-                class="color-display"
-                style="--current-color: rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})"
-            >
+            <div class="color-display">
                 <div class="sliders">
                     <div class="slider-group hue-slider">
                         <input
