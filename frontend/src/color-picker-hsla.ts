@@ -6,8 +6,11 @@ export class ColorPickerHSLA extends LitElement {
     @property({ type: String, reflect: true })
     color = '#ffffffff' // Default color in hex RGBA format
 
+    @property({ type: Boolean })
+
     // RGBA as the primary internal representation
-    @state() red = 255
+    @state()
+    red = 255
     @state() green = 0
     @state() blue = 0
     @state() alpha = 1
@@ -57,13 +60,13 @@ export class ColorPickerHSLA extends LitElement {
         }
     }
 
-    updateColor(e: Event, color: 'hue' | 'saturation' | 'lightness' | 'alpha') {
+    updateColorChannel(e: Event, channel: 'hue' | 'saturation' | 'lightness' | 'alpha') {
         const target = e.target as HTMLInputElement
-        let value = color === 'alpha' ? parseFloat(target.value) : parseInt(target.value, 10)
+        let value = channel === 'alpha' ? parseFloat(target.value) : parseInt(target.value, 10)
 
         if (!this.disableSnapping) {
             let stepSize: number
-            switch (color) {
+            switch (channel) {
                 case 'hue':
                     stepSize = 360 / 9 // for the ROYGBIV color stops
                     break
@@ -89,13 +92,12 @@ export class ColorPickerHSLA extends LitElement {
             }
         }
 
-        if (color === 'hue' && this.firstHueChange) {
-            this.saturation = 100
+        if (channel === 'hue' && this.firstHueChange && this.lightness === 100) {
             this.lightness = 50
             this.firstHueChange = false
         }
 
-        this[color] = value
+        this[channel] = value
         this.convertHSLAToRGBA()
         this.updateCSSVariables()
     }
@@ -226,10 +228,10 @@ export class ColorPickerHSLA extends LitElement {
                 rgba(220, 220, 220, 0.3) 12px
             );
         }
-        :host(:hover) .sliders {
+        :host(:hover) #sliders {
             opacity: 1;
         }
-        .color-display {
+        #swatch {
             width: 100%;
             height: 100%;
             background-color: var(--current-color);
@@ -241,7 +243,7 @@ export class ColorPickerHSLA extends LitElement {
             padding: 8px;
             box-sizing: border-box;
         }
-        .sliders {
+        #sliders {
             display: flex;
             flex-direction: column;
             gap: 13px;
@@ -286,11 +288,11 @@ export class ColorPickerHSLA extends LitElement {
             cursor: pointer;
             border-radius: 4px;
         }
-        .hue-slider input[type='range'] {
+        input[type='range'].hue-slider {
             background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red);
             background-repeat: no-repeat; // prevents artifacts
         }
-        .saturation-slider input[type='range'] {
+        input[type='range'].saturation-slider {
             background: linear-gradient(
                 to right,
                 hsla(var(--hue), 0%, var(--lightness), 1),
@@ -298,7 +300,7 @@ export class ColorPickerHSLA extends LitElement {
             );
             background-repeat: no-repeat; // prevents artifacts
         }
-        .lightness-slider input[type='range'] {
+        input[type='range'].lightness-slider {
             background: linear-gradient(
                 to right,
                 black,
@@ -307,7 +309,7 @@ export class ColorPickerHSLA extends LitElement {
             );
             background-repeat: no-repeat; // prevents artifacts
         }
-        .alpha-slider input[type='range'] {
+        input[type='range'].alpha-slider {
             background: linear-gradient(
                 to right,
                 transparent,
@@ -318,48 +320,44 @@ export class ColorPickerHSLA extends LitElement {
 
     render() {
         return html`
-            <div class="color-display">
-                <div class="sliders">
-                    <div class="hue-slider">
-                        <input
-                            type="range"
-                            min="0"
-                            max="360"
-                            .value="${this.hue}"
-                            step="1"
-                            @input="${(e: Event) => this.updateColor(e, 'hue')}"
-                        />
-                    </div>
-                    <div class="saturation-slider">
-                        <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            step="1"
-                            .value="${this.saturation}"
-                            @input="${(e: Event) => this.updateColor(e, 'saturation')}"
-                        />
-                    </div>
-                    <div class="lightness-slider">
-                        <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            step="1"
-                            .value="${this.lightness}"
-                            @input="${(e: Event) => this.updateColor(e, 'lightness')}"
-                        />
-                    </div>
-                    <div class="alpha-slider">
-                        <input
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.01"
-                            .value="${this.alpha}"
-                            @input="${(e: Event) => this.updateColor(e, 'alpha')}"
-                        />
-                    </div>
+            <div id="swatch">
+                <div id="sliders">
+                    <input
+                        type="range"
+                        class="hue-slider"
+                        min="0"
+                        max="360"
+                        .value="${this.hue}"
+                        step="1"
+                        @input="${(e: Event) => this.updateColorChannel(e, 'hue')}"
+                    />
+                    <input
+                        type="range"
+                        class="saturation-slider"
+                        min="0"
+                        max="100"
+                        step="1"
+                        .value="${this.saturation}"
+                        @input="${(e: Event) => this.updateColorChannel(e, 'saturation')}"
+                    />
+                    <input
+                        type="range"
+                        class="lightness-slider"
+                        min="0"
+                        max="100"
+                        step="1"
+                        .value="${this.lightness}"
+                        @input="${(e: Event) => this.updateColorChannel(e, 'lightness')}"
+                    />
+                    <input
+                        class="alpha-slider"
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        .value="${this.alpha}"
+                        @input="${(e: Event) => this.updateColorChannel(e, 'alpha')}"
+                    />
                 </div>
                 <div class="hex-display">
                     <input type="text" .value="${this.hexColor}" @input="${this.handleHexInput}" />

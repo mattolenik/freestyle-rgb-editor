@@ -25,6 +25,7 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx, a.cancelFunc = context.WithCancel(ctx)
 	a.drive = vdrive.New(keyboard.FSEdgeRGB)
 	go a.drive.Watch(a.ctx)
+	fmt.Println(vdrive.IsKeyboardPresent(keyboard.FreestyleEdgeRGBKeyboard.UsbInfo))
 }
 
 func (a *App) shutdown(ctx context.Context) {

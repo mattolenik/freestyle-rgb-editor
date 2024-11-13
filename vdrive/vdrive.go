@@ -11,6 +11,8 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/karalabe/hid"
 )
 
 type VolumeInfo struct {
@@ -33,11 +35,24 @@ type VDrive interface {
 
 type keyboardVDrive struct {
 	VDrive
-	name keyboard.KeyboardName
+	name keyboard.KeyboardID
 }
 
-func New(kbName keyboard.KeyboardName) VDrive {
+func New(kbName keyboard.KeyboardID) VDrive {
 	return &keyboardVDrive{name: kbName}
+}
+
+func IsKeyboardPresent(usbInfo keyboard.KeyboardUsbInfo) (bool, error) {
+	devices, err := hid.Enumerate(0, 0)
+	if err != nil {
+		return false, fmt.Errorf("failed trying to find keyboard %q: %w", usbInfo.Product, err)
+	}
+	for _, device := range devices {
+		if device.Manufacturer == usbInfo.Manufacturer && device.Product == usbInfo.Product {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 func (d *keyboardVDrive) GetVolumeInfo() (*VolumeInfo, error) {
@@ -108,7 +123,7 @@ func (d *keyboardVDrive) Watch(ctx context.Context) {
 	}
 }
 
-func volumeInfoCommand(kbName keyboard.KeyboardName) string {
+func volumeInfoCommand(kbName keyboard.KeyboardID) string {
 	switch runtime.GOOS {
 	case "windows":
 		panic("windows not supported yet")

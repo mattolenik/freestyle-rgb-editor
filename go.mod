@@ -4,7 +4,10 @@ go 1.23
 
 toolchain go1.23.2
 
-require github.com/wailsapp/wails/v2 v2.9.2
+require (
+	github.com/karalabe/hid v1.0.1-0.20240919124526-821c38d2678e
+	github.com/wailsapp/wails/v2 v2.9.2
+)
 
 require (
 	atomicgo.dev/cursor v0.1.1 // indirect

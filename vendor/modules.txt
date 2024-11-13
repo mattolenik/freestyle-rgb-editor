@@ -257,6 +257,21 @@ github.com/jchv/go-winloader/internal/memloader
 github.com/jchv/go-winloader/internal/pe
 github.com/jchv/go-winloader/internal/vmem
 github.com/jchv/go-winloader/internal/winloader
+# github.com/karalabe/hid v1.0.1-0.20240919124526-821c38d2678e
+## explicit; go 1.19
+github.com/karalabe/hid
+github.com/karalabe/hid/hidapi
+github.com/karalabe/hid/hidapi/hidapi
+github.com/karalabe/hid/hidapi/hidtest
+github.com/karalabe/hid/hidapi/libusb
+github.com/karalabe/hid/hidapi/linux
+github.com/karalabe/hid/hidapi/mac
+github.com/karalabe/hid/hidapi/netbsd
+github.com/karalabe/hid/hidapi/pc
+github.com/karalabe/hid/hidapi/windows
+github.com/karalabe/hid/libusb
+github.com/karalabe/hid/libusb/libusb
+github.com/karalabe/hid/libusb/libusb/os
 # github.com/kevinburke/ssh_config v1.2.0
 ## explicit
 github.com/kevinburke/ssh_config
