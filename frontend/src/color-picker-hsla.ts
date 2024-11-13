@@ -215,10 +215,16 @@ export class ColorPickerHSLA extends LitElement {
         :host {
             width: 180px;
             height: 180px;
-            background-color: black;
             border-radius: var(--border-radius);
             --slider-height: 14px;
             --border-radius: 6px;
+            background: repeating-linear-gradient(
+                -45deg,
+                rgba(128, 128, 128, 0.3) 0px,
+                rgba(128, 128, 128, 0.3) 6px,
+                rgba(220, 220, 220, 0.3) 6px,
+                rgba(220, 220, 220, 0.3) 12px
+            );
         }
         :host(:hover) .sliders {
             opacity: 1;
@@ -287,8 +293,8 @@ export class ColorPickerHSLA extends LitElement {
         .saturation-slider input[type='range'] {
             background: linear-gradient(
                 to right,
-                hsla(var(--hue), 0%, var(--lightness), var(--alpha)),
-                hsla(var(--hue), 100%, var(--lightness), var(--alpha))
+                hsla(var(--hue), 0%, var(--lightness), 1),
+                hsla(var(--hue), 100%, var(--lightness), 1)
             );
             background-repeat: no-repeat; // prevents artifacts
         }
@@ -296,20 +302,17 @@ export class ColorPickerHSLA extends LitElement {
             background: linear-gradient(
                 to right,
                 black,
-                hsla(var(--hue), var(--saturation), 50%, var(--alpha)),
-                hsla(0, 100%, 100%, var(--alpha))
+                hsla(var(--hue), var(--saturation), 50%, 1),
+                hsla(0, 100%, 100%, 1)
             );
             background-repeat: no-repeat; // prevents artifacts
         }
         .alpha-slider input[type='range'] {
-            background: linear-gradient(to right, transparent, var(--current-color)),
-                repeating-linear-gradient(
-                    -45deg,
-                    rgba(128, 128, 128, 0.3) 0px,
-                    rgba(128, 128, 128, 0.3) 6px,
-                    rgba(220, 220, 220, 0.3) 6px,
-                    rgba(220, 220, 220, 0.3) 12px
-                );
+            background: linear-gradient(
+                to right,
+                transparent,
+                hsla(var(--hue), var(--saturation), var(--lightness), 1)
+            );
         }
     `
 
@@ -317,7 +320,7 @@ export class ColorPickerHSLA extends LitElement {
         return html`
             <div class="color-display">
                 <div class="sliders">
-                    <div class="slider-group hue-slider">
+                    <div class="hue-slider">
                         <input
                             type="range"
                             min="0"
@@ -327,7 +330,7 @@ export class ColorPickerHSLA extends LitElement {
                             @input="${(e: Event) => this.updateColor(e, 'hue')}"
                         />
                     </div>
-                    <div class="slider-group saturation-slider">
+                    <div class="saturation-slider">
                         <input
                             type="range"
                             min="0"
@@ -337,7 +340,7 @@ export class ColorPickerHSLA extends LitElement {
                             @input="${(e: Event) => this.updateColor(e, 'saturation')}"
                         />
                     </div>
-                    <div class="slider-group lightness-slider">
+                    <div class="lightness-slider">
                         <input
                             type="range"
                             min="0"
@@ -347,7 +350,7 @@ export class ColorPickerHSLA extends LitElement {
                             @input="${(e: Event) => this.updateColor(e, 'lightness')}"
                         />
                     </div>
-                    <div class="slider-group alpha-slider">
+                    <div class="alpha-slider">
                         <input
                             type="range"
                             min="0"
